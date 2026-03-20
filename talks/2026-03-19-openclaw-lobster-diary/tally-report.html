@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenClaw 直播報名分析</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Noto Sans TC', sans-serif; background: #faf8f5; color: #292524; }
+  .bar { background: #ca8a04; border-radius: 4px; transition: width 1s ease; }
+  .bar-light { background: #f5e6c0; border-radius: 4px; }
+  .card { background: #f5f0e8; border-radius: 12px; padding: 1.5rem; }
+  .gold { color: #ca8a04; }
+  .num { font-family: 'JetBrains Mono', monospace; }
+</style>
+</head>
+<body class="min-h-screen p-8">
+
+<div class="max-w-5xl mx-auto">
+
+  <!-- 標題 -->
+  <div class="mb-8">
+    <p class="text-sm font-mono gold tracking-widest mb-2">OPENCLAW LIVE × 2026.03.19</p>
+    <h1 class="text-4xl font-black text-[#292524]">600 位報名者完整洞察</h1>
+    <div class="w-12 h-0.5 bg-[#ca8a04] mt-3 mb-3"></div>
+    <p class="text-[#78716c]">今晚是你們的夜晚 — 讓龍蝦先幫 Sammy 分析一下今天的觀眾</p>
+  </div>
+
+  <!-- 總覽 4 格 -->
+  <div class="grid grid-cols-4 gap-4 mb-8">
+    <div class="card text-center">
+      <p class="text-5xl font-black num gold">600</p>
+      <p class="text-sm text-[#78716c] mt-1">總報名人數</p>
+    </div>
+    <div class="card text-center">
+      <p class="text-5xl font-black num text-[#292524]">3</p>
+      <p class="text-sm text-[#78716c] mt-1">報名天數</p>
+    </div>
+    <div class="card text-center">
+      <p class="text-5xl font-black num gold">65%</p>
+      <p class="text-sm text-[#78716c] mt-1">晚間報名<br/><span class="text-xs">19–23 點</span></p>
+    </div>
+    <div class="card text-center">
+      <p class="text-5xl font-black num text-[#292524]">84%</p>
+      <p class="text-sm text-[#78716c] mt-1">新使用者<br/><span class="text-xs">第一次接觸或剛裝</span></p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-6 mb-6">
+
+    <!-- 職業分布 -->
+    <div class="card">
+      <h2 class="text-lg font-black text-[#292524] mb-4">職業分布</h2>
+      <div class="space-y-3">
+        <div>
+          <div class="flex justify-between text-sm mb-1"><span class="font-bold">工程師</span><span class="num">251 人 (42%)</span></div>
+          <div class="bar-light h-3"><div class="bar h-3" style="width:42%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1"><span>主管</span><span class="num">77 人 (13%)</span></div>
+          <div class="bar-light h-3"><div class="bar h-3" style="width:13%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1"><span>PM / 產品</span><span class="num">75 人 (13%)</span></div>
+          <div class="bar-light h-3"><div class="bar h-3" style="width:13%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1"><span>創業 / 自由工作者</span><span class="num">71 人 (12%)</span></div>
+          <div class="bar-light h-3"><div class="bar h-3" style="width:12%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1"><span>其他</span><span class="num">72 人 (12%)</span></div>
+          <div class="bar-light h-3"><div class="bar h-3" style="width:12%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1"><span>學生</span><span class="num">30 人 (5%)</span></div>
+          <div class="bar-light h-3"><div class="bar h-3" style="width:5%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1"><span>教育工作者</span><span class="num">13 人 (2%)</span></div>
+          <div class="bar-light h-3"><div class="bar h-3" style="width:2%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1"><span>醫療</span><span class="num">6 人 (1%)</span></div>
+          <div class="bar-light h-3"><div class="bar h-3" style="width:1%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OpenClaw 使用背景 -->
+    <div class="card">
+      <h2 class="text-lg font-black text-[#292524] mb-4">OpenClaw 使用背景</h2>
+      <div class="space-y-4">
+        <div>
+          <div class="flex justify-between text-sm mb-1">
+            <span class="font-bold gold">剛聽過，想了解</span>
+            <span class="num font-bold gold">350 人 (59%)</span>
+          </div>
+          <div class="bar-light h-4"><div class="bar h-4" style="width:59%"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1">
+            <span>剛裝好，還在摸索</span>
+            <span class="num">149 人 (25%)</span>
+          </div>
+          <div class="bar-light h-4"><div class="bar h-4" style="width:25%;opacity:0.7"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1">
+            <span>有在用，想學更多</span>
+            <span class="num">95 人 (16%)</span>
+          </div>
+          <div class="bar-light h-4"><div class="bar h-4" style="width:16%;opacity:0.5"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1">
+            <span>進階用戶</span>
+            <span class="num">2 人 (&lt;1%)</span>
+          </div>
+          <div class="bar-light h-4"><div class="bar h-4" style="width:1%;opacity:0.3"></div></div>
+        </div>
+      </div>
+
+      <div class="mt-6 bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm">
+        <p class="font-bold text-amber-800 mb-1">💡 洞察</p>
+        <p class="text-amber-700">59% 今晚第一次接觸！從零開始介紹是對的 ✅</p>
+      </div>
+
+      <!-- 關注主題 -->
+      <h3 class="font-bold text-[#292524] mt-5 mb-3">大家最想聽什麼？</h3>
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-between items-center">
+          <span>🔒 資安疑慮（外洩、隔離、帳單）</span>
+          <span class="font-bold num">~35%</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span>💡 實際應用案例</span>
+          <span class="font-bold num">~30%</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span>🔧 新手入門（安裝、小白求帶）</span>
+          <span class="font-bold num">~25%</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span>💰 費用問題</span>
+          <span class="font-bold num">~10%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 報名時間軸 -->
+  <div class="card mb-6">
+    <h2 class="text-lg font-black text-[#292524] mb-4">報名時間軸</h2>
+    <div class="grid grid-cols-3 gap-6 text-center mb-4">
+      <div>
+        <p class="text-4xl font-black num gold">390</p>
+        <p class="font-bold text-[#292524]">3/17</p>
+        <p class="text-sm text-[#78716c]">爆發日 💥</p>
+      </div>
+      <div>
+        <p class="text-4xl font-black num text-[#292524]">160</p>
+        <p class="font-bold text-[#292524]">3/18</p>
+        <p class="text-sm text-[#78716c]">持續發酵</p>
+      </div>
+      <div>
+        <p class="text-4xl font-black num text-[#292524]">46</p>
+        <p class="font-bold text-[#292524]">3/19</p>
+        <p class="text-sm text-[#78716c]">今天還在進來</p>
+      </div>
+    </div>
+    <div class="border-t border-[#e8e4de] pt-4">
+      <p class="text-sm font-bold text-[#292524] mb-2">熱門報名時段（台灣時間）</p>
+      <div class="flex gap-3 text-sm">
+        <div class="text-center"><p class="num font-bold gold text-lg">111</p><p class="text-[#78716c]">20:00</p></div>
+        <div class="text-center"><p class="num font-bold text-lg">62</p><p class="text-[#78716c]">19:00</p></div>
+        <div class="text-center"><p class="num font-bold text-lg">57</p><p class="text-[#78716c]">21:00</p></div>
+        <div class="text-center"><p class="num font-bold text-lg">47</p><p class="text-[#78716c]">22:00</p></div>
+        <div class="text-center"><p class="num font-bold text-lg">42</p><p class="text-[#78716c]">23:00</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 精選留言 -->
+  <div class="card mb-6">
+    <h2 class="text-lg font-black text-[#292524] mb-4">精選留言</h2>
+    <div class="space-y-3">
+      <div class="bg-white rounded-lg p-3 border-l-3 border-[#ca8a04]" style="border-left:3px solid #ca8a04">
+        <p class="text-sm text-[#292524]">「表單很好看😍 填完龍蝦會跟你彙報嗎？」</p>
+      </div>
+      <div class="bg-white rounded-lg p-3" style="border-left:3px solid #e8e4de">
+        <p class="text-sm text-[#292524]">「一隻龍蝦一台電腦，抑或是多支龍蝦一台電腦。目前養了兩隻分別在兩台電腦上」</p>
+      </div>
+      <div class="bg-white rounded-lg p-3" style="border-left:3px solid #e8e4de">
+        <p class="text-sm text-[#292524]">「是說，我選了「想來了解」，會不會變成全場最菜… ☺️ 感謝 Sammy 大的分享～」</p>
+      </div>
+      <div class="bg-white rounded-lg p-3" style="border-left:3px solid #e8e4de">
+        <p class="text-sm text-[#292524]">「小白到底能不能自己安裝？」</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="text-center text-xs text-[#a8a29e] mt-8">
+    <p>由 Mochi（龍蝦）自動分析生成 🍡　slides.3mi.tw/2026-3-19-openclaw</p>
+  </div>
+
+</div>
+</body>
+</html>

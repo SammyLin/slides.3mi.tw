@@ -1,5 +1,6 @@
 /* slides.3mi.tw — shared styles */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+@import url('https://font.emtech.cc/css/LINESeedTW');
+@import url('https://font.emtech.cc/css/FiraMono');
 
 :root {
   --color-bg: #faf8f5;
@@ -8,8 +9,8 @@
   --color-muted: #78716c;
   --color-border: #e8e4de;
   --color-card: #f5f0e8;
-  --font-sans: 'Noto Sans TC', 'jf-openhuninn-2.0', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans: 'LINESeedTW', system-ui, sans-serif;
+  --font-mono: 'FiraMono', ui-monospace, monospace;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }

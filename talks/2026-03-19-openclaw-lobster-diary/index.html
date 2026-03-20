@@ -3,47 +3,783 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>龍蝦養成日記 2.0 — slides.3mi.tw</title>
-  <link rel="stylesheet" href="../../styles.css">
+  <title>龍蝦養成日記 2.0 — Sammy Lin</title>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1219H60Y9P"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-1219H60Y9P');
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans TC"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
   <style>
-    .talk-container { max-width: 640px; margin: 0 auto; padding: 4rem 1.5rem; }
-    .back { font-size: 0.85rem; margin-bottom: 2rem; display: inline-block; }
-    .back:hover { color: var(--color-primary); }
-    .link-card {
-      display: block;
-      background: #fff;
-      border: 1px solid var(--color-border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      transition: box-shadow 0.2s, transform 0.2s;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { overflow: hidden; height: 100%; background: #faf8f5; }
+    .slide { width: 100vw; height: 100vh; display: none; flex-direction: column; justify-content: center; padding: 3.5rem 6rem; position: relative; background: #faf8f5; }
+    .slide.active { display: flex; }
+    .progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: #ca8a04; transition: width 0.3s ease; z-index: 50; }
+    .page-number { position: fixed; bottom: 1.5rem; right: 2rem; font-size: 0.7rem; color: #a8a29e; z-index: 50; font-family: 'JetBrains Mono', monospace; }
+    .gold-line { width: 3rem; height: 2px; background: #ca8a04; margin: 1rem 0 1.5rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th { background: #292524; color: #faf8f5; padding: 0.6rem 1rem; text-align: left; font-size: 0.85rem; font-weight: 700; }
+    td { padding: 0.55rem 1rem; font-size: 0.85rem; border-bottom: 1px solid #e8e4de; color: #292524; }
+    tr:nth-child(even) td { background: #f5f0e8; }
+    tr:hover td { background: #f0ebe0; }
+    .card { background: #f5f0e8; border-radius: 0.75rem; padding: 1.25rem 1.5rem; }
+    .card-border-gold { border-left: 3px solid #ca8a04; }
+    @media print {
+      html, body { overflow: visible; height: auto; }
+      .slide { display: flex !important; page-break-after: always; height: 100vh; }
+      .progress-bar, .page-number { display: none !important; }
     }
-    .link-card:hover {
-      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-      transform: translateY(-2px);
-      color: inherit;
-    }
-    .link-card h3 { font-weight: 700; font-size: 1rem; margin-bottom: 0.25rem; }
-    .link-card p { font-size: 0.85rem; color: var(--color-muted); }
+    .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
-<body>
-  <div class="talk-container">
-    <a href="../../" class="back">← Back to all talks</a>
-    <h1 style="font-size:1.75rem;font-weight:900;margin-bottom:0.25rem;">龍蝦養成日記 2.0</h1>
-    <p style="color:var(--color-muted);font-size:0.85rem;margin-bottom:0.5rem;">Sammy Lin · 2026.03.19</p>
-    <div class="gold-line" style="margin-bottom:2rem;"></div>
+<body x-data="slideshow()" x-init="init()" @keydown.window="handleKey($event)" class="font-sans">
 
-    <a class="link-card" href="slides.html">
-      <h3>Slides</h3>
-      <p>OpenClaw 實戰經驗分享完整簡報</p>
-    </a>
+  <div class="progress-bar" :style="`width: ${progress}%`"></div>
+  <div class="page-number" x-text="`${current + 1} / ${total}`"></div>
 
-    <a class="link-card" href="tally-report.html">
-      <h3>Data Report</h3>
-      <p>600 位報名者完整洞察分析</p>
-    </a>
-  </div>
+  <!-- ===== 第 1 頁｜封面 ===== -->
+  <section class="slide" :class="{ 'active': current === 0 }">
+    <div class="max-w-4xl">
+      <p class="text-sm font-mono text-[#ca8a04] mb-4 tracking-widest">OPENCLAW × 2026.03.19</p>
+      <h1 class="text-6xl font-black text-[#292524] leading-tight mb-2">龍蝦養成日記</h1>
+      <h2 class="text-4xl font-black text-[#ca8a04] mb-6">2.0</h2>
+      <div class="gold-line"></div>
+      <p class="text-xl text-[#78716c] mb-1">OpenClaw 實戰經驗分享</p>
+      <p class="text-lg text-[#292524] font-bold mt-6">Sr. Principal Architect</p>
+    </div>
+    <div class="absolute bottom-8 left-24 text-xs text-[#a8a29e]">按方向鍵切換 · F 全螢幕 · P 列印</div>
+  </section>
+
+  <!-- ===== 報名者分析 ===== -->
+  <section class="slide" :class="{ 'active': current === 1 }">
+    <div class="max-w-5xl w-full">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">今晚在場的是誰？</h2>
+      <div class="gold-line"></div>
+      <div class="grid grid-cols-4 gap-3 mb-4">
+        <div class="card text-center py-3"><p class="text-4xl font-black font-mono text-[#ca8a04]">600</p><p class="text-xs text-[#78716c] mt-1">總報名人數</p></div>
+        <div class="card text-center py-3"><p class="text-4xl font-black font-mono">84%</p><p class="text-xs text-[#78716c] mt-1">新使用者</p></div>
+        <div class="card text-center py-3"><p class="text-4xl font-black font-mono text-[#ca8a04]">59%</p><p class="text-xs text-[#78716c] mt-1">第一次聽到</p></div>
+        <div class="card text-center py-3"><p class="text-4xl font-black font-mono">390</p><p class="text-xs text-[#78716c] mt-1">3/17 單日報名</p></div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="card">
+          <p class="font-bold text-[#292524] mb-3 text-sm">職業分布</p>
+          <div class="space-y-2">
+            <div><div class="flex justify-between text-xs mb-0.5"><span class="font-bold">工程師</span><span class="font-mono">251 人 (42%)</span></div><div class="h-2.5 bg-[#f5e6c0] rounded"><div class="h-2.5 bg-[#ca8a04] rounded" style="width:42%"></div></div></div>
+            <div><div class="flex justify-between text-xs mb-0.5"><span>主管</span><span class="font-mono">77 人 (13%)</span></div><div class="h-2.5 bg-[#f5e6c0] rounded"><div class="h-2.5 bg-[#ca8a04] rounded opacity-70" style="width:13%"></div></div></div>
+            <div><div class="flex justify-between text-xs mb-0.5"><span>PM / 產品</span><span class="font-mono">75 人 (13%)</span></div><div class="h-2.5 bg-[#f5e6c0] rounded"><div class="h-2.5 bg-[#ca8a04] rounded opacity-70" style="width:13%"></div></div></div>
+            <div><div class="flex justify-between text-xs mb-0.5"><span>創業 / 自由工作者</span><span class="font-mono">71 人 (12%)</span></div><div class="h-2.5 bg-[#f5e6c0] rounded"><div class="h-2.5 bg-[#ca8a04] rounded opacity-50" style="width:12%"></div></div></div>
+            <div><div class="flex justify-between text-xs mb-0.5"><span>學生</span><span class="font-mono">30 人 (5%)</span></div><div class="h-2.5 bg-[#f5e6c0] rounded"><div class="h-2.5 bg-[#ca8a04] rounded opacity-40" style="width:5%"></div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <p class="font-bold text-[#292524] mb-3 text-sm">大家最想聽什麼？</p>
+          <div class="space-y-2 text-xs mb-3">
+            <div><div class="flex justify-between mb-0.5"><span>🔒 資安疑慮</span><span class="font-mono font-bold">~35%</span></div><div class="h-2.5 bg-[#f5e6c0] rounded"><div class="h-2.5 bg-[#ca8a04] rounded" style="width:35%"></div></div></div>
+            <div><div class="flex justify-between mb-0.5"><span>💡 實際應用案例</span><span class="font-mono font-bold">~30%</span></div><div class="h-2.5 bg-[#f5e6c0] rounded"><div class="h-2.5 bg-[#ca8a04] rounded opacity-70" style="width:30%"></div></div></div>
+            <div><div class="flex justify-between mb-0.5"><span>🔧 新手入門</span><span class="font-mono font-bold">~25%</span></div><div class="h-2.5 bg-[#f5e6c0] rounded"><div class="h-2.5 bg-[#ca8a04] rounded opacity-50" style="width:25%"></div></div></div>
+            <div><div class="flex justify-between mb-0.5"><span>💰 費用問題</span><span class="font-mono font-bold">~10%</span></div><div class="h-2.5 bg-[#f5e6c0] rounded"><div class="h-2.5 bg-[#ca8a04] rounded opacity-30" style="width:10%"></div></div></div>
+          </div>
+          <div class="bg-amber-50 border border-amber-200 rounded-lg p-2 text-xs text-amber-700">
+            <strong>今晚重點：</strong> 59% 第一次接觸 → 從頭講是對的；42% 工程師 + 26% 主管/PM → 技術和應用都要顧
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 誰適合 OpenClaw？ ===== -->
+  <section class="slide" :class="{ 'active': current === 2 }" }">
+    <div class="max-w-5xl">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">誰適合用 OpenClaw？</h2>
+      <div class="gold-line"></div>
+      <div class="grid grid-cols-2 gap-6">
+        <div>
+          <p class="font-bold text-green-700 mb-3 text-sm">✅ 適合你，如果你是⋯</p>
+          <div class="space-y-2">
+            <div class="card card-border-gold text-sm"><p class="font-bold text-[#292524]">🔧 工程師 / 技術人</p><p class="text-[#78716c] text-xs mt-1">看到系統很想調教、有能力設定 config、享受「自己動手蓋」的成就感</p></div>
+            <div class="card card-border-gold text-sm"><p class="font-bold text-[#292524]">⏰ 時間很碎的人</p><p class="text-[#78716c] text-xs mt-1">通勤族、兩個小孩的爸媽、side project 想做但沒時間坐下來的人</p></div>
+            <div class="card card-border-gold text-sm"><p class="font-bold text-[#292524]">🔁 有重複性工作要自動化</p><p class="text-[#78716c] text-xs mt-1">每天都在做的事、定期要整理的資訊、手動很煩的流程</p></div>
+            <div class="card card-border-gold text-sm"><p class="font-bold text-[#292524]">🔐 在意隱私 / 資安</p><p class="text-[#78716c] text-xs mt-1">不想資料上雲、想要完全掌控自己的 AI 助理</p></div>
+          </div>
+        </div>
+        <div>
+          <p class="font-bold text-red-500 mb-3 text-sm">❌ 可能還不適合，如果⋯</p>
+          <div class="space-y-2 mb-3">
+            <div class="card text-sm"><p class="font-bold text-[#292524]">完全不想碰任何設定</p><p class="text-[#78716c] text-xs mt-1">那種人用 Manus 可能更快，OpenClaw 需要一點初始投入</p></div>
+            <div class="card text-sm"><p class="font-bold text-[#292524]">只需要偶爾問一個問題</p><p class="text-[#78716c] text-xs mt-1">ChatGPT 就夠了。OpenClaw 的價值在「長期、主動、持續執行」</p></div>
+            <div class="card text-sm"><p class="font-bold text-[#292524]">沒有固定的工作流程</p><p class="text-[#78716c] text-xs mt-1">龍蝦最強是把重複工作自動化，沒有重複性就沒有槓桿</p></div>
+          </div>
+          <div class="card card-border-gold text-sm">
+            <p class="font-bold text-[#ca8a04]">但！</p>
+            <p class="text-[#78716c] text-xs mt-1">如果你今天只是好奇，就從今晚開始養一隻試試。<br/>先從<strong class="text-[#292524]">一件煩事</strong>開始，感覺對了再繼續。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 第 2 頁｜什麼是 OpenClaw？ ===== -->
+  <section class="slide" :class="{ 'active': current === 3 }" }">
+    <div class="max-w-4xl">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">什麼是 OpenClaw？</h2>
+      <div class="gold-line"></div>
+      <div class="card card-border-gold mb-8">
+        <p class="text-lg text-[#292524] italic leading-relaxed">「每個人身邊都會有一個專屬的 AI 助理，就像你有自己的電話一樣。」</p>
+        <p class="text-sm text-[#ca8a04] font-bold mt-2">— Jensen Huang, Nvidia CEO</p>
+      </div>
+      <ul class="space-y-4">
+        <li class="flex items-start gap-3">
+          <svg class="w-5 h-5 text-[#ca8a04] mt-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          <div><p class="font-bold text-[#292524]">不是聊天機器人，是會主動做事的「龍蝦」</p><p class="text-sm text-[#78716c]">有記憶、有個性、有工作排程，24 小時在線</p></div>
+        </li>
+        <li class="flex items-start gap-3">
+          <svg class="w-5 h-5 text-[#ca8a04] mt-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          <div><p class="font-bold text-[#292524]">連接各種工具：搜尋、寫檔案、傳訊息、控制電腦</p><p class="text-sm text-[#78716c]">3,000+ 技能，從查股票到寄信都行</p></div>
+        </li>
+        <li class="flex items-start gap-3">
+          <svg class="w-5 h-5 text-[#ca8a04] mt-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          <div><p class="font-bold text-[#292524]">完全開源，自己掌控，不被平台綁架</p><p class="text-sm text-[#78716c]">GitHub 25 萬星，社群活躍</p></div>
+        </li>
+        <li class="flex items-start gap-3">
+          <svg class="w-5 h-5 text-[#ca8a04] mt-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          <div><p class="font-bold text-[#292524]">ChatGPT 是瑞士刀，OpenClaw 才是伙計</p><p class="text-sm text-[#78716c]">你說要做什麼，龍蝦幫你想怎麼做</p></div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== 第 3 頁｜架構圖 ===== -->
+  <section class="slide" :class="{ 'active': current === 4 }" }">
+    <div class="w-full max-w-5xl">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">OpenClaw 怎麼運作？</h2>
+      <div class="gold-line"></div>
+      <svg viewBox="0 0 960 430" width="100%" xmlns="http://www.w3.org/2000/svg" style="font-family:'Noto Sans TC',sans-serif;">
+        <defs>
+          <marker id="a2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#ca8a04"/></marker>
+          <marker id="a3" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#292524"/></marker>
+        </defs>
+        <!-- 你 -->
+        <rect x="8" y="160" width="100" height="110" rx="8" fill="#292524"/>
+        <text x="58" y="205" text-anchor="middle" fill="#faf8f5" font-size="22" font-weight="900">你</text>
+        <text x="58" y="225" text-anchor="middle" fill="#ca8a04" font-size="10">Telegram</text>
+        <text x="58" y="240" text-anchor="middle" fill="#a8a29e" font-size="10">LINE / SMS 等</text>
+        <!-- 訊息接收器 -->
+        <line x1="108" y1="215" x2="155" y2="215" stroke="#ca8a04" stroke-width="2" marker-end="url(#a2)"/>
+        <rect x="158" y="178" width="130" height="74" rx="6" fill="#f5f0e8" stroke="#292524" stroke-width="1.5"/>
+        <text x="223" y="210" text-anchor="middle" fill="#292524" font-size="13" font-weight="700">訊息接收器</text>
+        <text x="223" y="228" text-anchor="middle" fill="#78716c" font-size="10">統一格式、解析附件</text>
+        <text x="223" y="242" text-anchor="middle" fill="#78716c" font-size="10">讓龍蝦看得懂</text>
+        <!-- 總指揮 -->
+        <line x1="288" y1="215" x2="335" y2="215" stroke="#292524" stroke-width="1.5" marker-end="url(#a3)"/>
+        <rect x="338" y="10" width="280" height="200" rx="8" fill="#faf8f5" stroke="#292524" stroke-width="2"/>
+        <text x="478" y="38" text-anchor="middle" fill="#292524" font-size="15" font-weight="900">總指揮</text>
+        <text x="478" y="55" text-anchor="middle" fill="#ca8a04" font-size="10" font-weight="700">Gateway Server</text>
+        <text x="478" y="72" text-anchor="middle" fill="#78716c" font-size="10">把你的訊息送到對的龍蝦那裡</text>
+        <!-- 會話分配器 -->
+        <rect x="356" y="82" width="244" height="46" rx="5" fill="#f5f0e8" stroke="#292524" stroke-width="1"/>
+        <text x="478" y="107" text-anchor="middle" fill="#292524" font-size="12" font-weight="700">會話分配器</text>
+        <text x="478" y="121" text-anchor="middle" fill="#78716c" font-size="9">判斷這條訊息要給哪隻龍蝦</text>
+        <line x1="478" y1="128" x2="478" y2="148" stroke="#292524" stroke-width="1.5" marker-end="url(#a3)"/>
+        <!-- 排隊等候區 -->
+        <rect x="356" y="152" width="244" height="44" rx="5" fill="#f5f0e8" stroke="#292524" stroke-width="1"/>
+        <text x="478" y="176" text-anchor="middle" fill="#292524" font-size="12" font-weight="700">排隊等候區</text>
+        <text x="478" y="190" text-anchor="middle" fill="#78716c" font-size="9">管理工作順序，不塞車</text>
+        <!-- 龍蝦大腦 -->
+        <line x1="338" y1="215" x2="290" y2="330" stroke="#292524" stroke-width="1.5" marker-end="url(#a3)"/>
+        <rect x="8" y="300" width="430" height="120" rx="8" fill="#faf8f5" stroke="#292524" stroke-width="2"/>
+        <text x="223" y="324" text-anchor="middle" fill="#292524" font-size="14" font-weight="900">龍蝦大腦　</text>
+        <text x="310" y="324" text-anchor="middle" fill="#ca8a04" font-size="10" font-weight="700">Agent Runner</text>
+        <!-- 4 子模組 -->
+        <rect x="18" y="335" width="90" height="74" rx="4" fill="#f5f0e8" stroke="#292524" stroke-width="1"/>
+        <text x="63" y="362" text-anchor="middle" fill="#292524" font-size="10" font-weight="700">選擇</text>
+        <text x="63" y="376" text-anchor="middle" fill="#292524" font-size="10" font-weight="700">AI 模型</text>
+        <rect x="118" y="335" width="90" height="74" rx="4" fill="#f5f0e8" stroke="#292524" stroke-width="1"/>
+        <text x="163" y="362" text-anchor="middle" fill="#292524" font-size="10" font-weight="700">性格</text>
+        <text x="163" y="376" text-anchor="middle" fill="#292524" font-size="10" font-weight="700">塑造器</text>
+        <rect x="218" y="335" width="90" height="74" rx="4" fill="#f5f0e8" stroke="#292524" stroke-width="1"/>
+        <text x="263" y="362" text-anchor="middle" fill="#292524" font-size="10" font-weight="700">記憶</text>
+        <text x="263" y="376" text-anchor="middle" fill="#292524" font-size="10" font-weight="700">讀取器</text>
+        <rect x="318" y="335" width="108" height="74" rx="4" fill="#f5f0e8" stroke="#ca8a04" stroke-width="1.5"/>
+        <text x="372" y="358" text-anchor="middle" fill="#292524" font-size="10" font-weight="700">記憶容量</text>
+        <text x="372" y="372" text-anchor="middle" fill="#292524" font-size="10" font-weight="700">守衛</text>
+        <text x="372" y="386" text-anchor="middle" fill="#78716c" font-size="9">塞太多自動精簡</text>
+        <!-- AI 大腦 -->
+        <line x1="438" y1="360" x2="490" y2="360" stroke="#292524" stroke-width="1.5" marker-end="url(#a3)"/>
+        <rect x="493" y="320" width="148" height="80" rx="8" fill="#292524"/>
+        <text x="567" y="355" text-anchor="middle" fill="#faf8f5" font-size="14" font-weight="900">AI 大腦</text>
+        <text x="567" y="372" text-anchor="middle" fill="#ca8a04" font-size="10">Claude / GPT 等</text>
+        <text x="567" y="386" text-anchor="middle" fill="#a8a29e" font-size="9">LLM API</text>
+        <!-- 思考執行循環 -->
+        <line x1="641" y1="360" x2="688" y2="360" stroke="#ca8a04" stroke-width="2" marker-end="url(#a2)"/>
+        <rect x="691" y="290" width="260" height="140" rx="8" fill="#faf8f5" stroke="#292524" stroke-width="2"/>
+        <text x="821" y="315" text-anchor="middle" fill="#292524" font-size="13" font-weight="900">思考執行循環</text>
+        <text x="821" y="330" text-anchor="middle" fill="#ca8a04" font-size="9" font-weight="700">Agentic Loop</text>
+        <!-- tools -->
+        <rect x="703" y="340" width="56" height="38" rx="4" fill="#f5f0e8" stroke="#292524" stroke-width="1"/>
+        <text x="731" y="364" text-anchor="middle" fill="#292524" font-size="10" font-weight="700">搜尋</text>
+        <rect x="767" y="340" width="56" height="38" rx="4" fill="#f5f0e8" stroke="#292524" stroke-width="1"/>
+        <text x="795" y="360" text-anchor="middle" fill="#292524" font-size="9" font-weight="700">寫</text>
+        <text x="795" y="372" text-anchor="middle" fill="#292524" font-size="9" font-weight="700">檔案</text>
+        <rect x="831" y="340" width="56" height="38" rx="4" fill="#f5f0e8" stroke="#292524" stroke-width="1"/>
+        <text x="859" y="360" text-anchor="middle" fill="#292524" font-size="9" font-weight="700">傳</text>
+        <text x="859" y="372" text-anchor="middle" fill="#292524" font-size="9" font-weight="700">訊息</text>
+        <rect x="895" y="340" width="46" height="38" rx="4" fill="#f5f0e8" stroke="#292524" stroke-width="1"/>
+        <text x="918" y="360" text-anchor="middle" fill="#292524" font-size="9" font-weight="700">執行</text>
+        <text x="918" y="372" text-anchor="middle" fill="#292524" font-size="9" font-weight="700">程式</text>
+        <text x="821" y="420" text-anchor="middle" fill="#78716c" font-size="10">AI決定 → 要用工具？→ 執行 → 再問AI → 直到完成</text>
+        <!-- 回覆路徑箭頭 (回到你) -->
+        <line x1="691" y1="220" x2="621" y2="220" stroke="#ca8a04" stroke-width="2" marker-end="url(#a2)"/>
+        <rect x="338" y="220" width="280" height="60" rx="6" fill="#f5f0e8" stroke="#ca8a04" stroke-width="1.5"/>
+        <text x="478" y="247" text-anchor="middle" fill="#292524" font-size="13" font-weight="700">回覆路徑</text>
+        <text x="478" y="265" text-anchor="middle" fill="#78716c" font-size="10">格式轉換 → 串流傳送給你</text>
+        <line x1="338" y1="250" x2="290" y2="250" stroke="#ca8a04" stroke-width="2" marker-end="url(#a2)"/>
+        <line x1="108" y1="250" x2="108" y2="215" stroke="#ca8a04" stroke-width="2" marker-end="url(#a2)"/>
+        <line x1="160" y1="250" x2="108" y2="250" stroke="#ca8a04" stroke-width="2"/>
+        <!-- 思考執行循環 上方連接到 總指揮右側 -->
+        <line x1="821" y1="290" x2="821" y2="220" stroke="#292524" stroke-width="1.5" marker-end="url(#a3)"/>
+        <line x1="821" y1="220" x2="693" y2="220" stroke="#292524" stroke-width="1.5"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ===== 第 4 頁｜飼養池 ===== -->
+  <section class="slide" :class="{ 'active': current === 5 }" }">
+    <div class="max-w-5xl">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">想養龍蝦，要怎麼下手？</h2>
+      <div class="gold-line"></div>
+      <p class="text-lg font-bold text-[#292524] mb-4">先決定：飼養池要放哪？</p>
+      <!-- 能力對比表 -->
+      <div class="mb-4 overflow-x-auto">
+        <table class="text-sm w-full">
+          <thead>
+            <tr>
+              <th class="text-left">能力</th>
+              <th class="text-center">☁️ 雲端龍蝦</th>
+              <th class="text-center bg-[#ca8a04]">🖥️ 地端龍蝦</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>基本對話、搜尋、發訊息</td><td class="text-center text-green-600 font-bold">✅</td><td class="text-center text-green-600 font-bold">✅</td></tr>
+            <tr><td>語音麥克風輸入</td><td class="text-center text-red-500">❌</td><td class="text-center text-green-600 font-bold">✅</td></tr>
+            <tr><td>控制本地電腦 / 軟體</td><td class="text-center text-red-500">❌</td><td class="text-center text-green-600 font-bold">✅</td></tr>
+            <tr><td>連接智慧家居（Home Assistant）</td><td class="text-center text-red-500">❌</td><td class="text-center text-green-600 font-bold">✅</td></tr>
+            <tr><td>攝影機 AI 偵測（Frigate）</td><td class="text-center text-red-500">❌</td><td class="text-center text-green-600 font-bold">✅</td></tr>
+            <tr><td>本地模型（完全免費）</td><td class="text-center text-red-500">❌</td><td class="text-center text-green-600 font-bold">✅</td></tr>
+            <tr><td>資料完全不出機器</td><td class="text-center text-red-500">❌</td><td class="text-center text-green-600 font-bold">✅</td></tr>
+            <tr><td>離線可用</td><td class="text-center text-red-500">❌</td><td class="text-center text-green-600 font-bold">✅</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card card-border-gold mb-3 text-sm">
+        <span class="font-bold text-[#292524]">一句話：</span>
+        <span class="text-[#78716c]">「雲端龍蝦是聰明的助理，地端龍蝦是<strong class="text-[#292524]">住在你家的管家</strong>。」</span>
+      </div>
+      <div class="grid grid-cols-2 gap-6 mb-4">
+        <div class="card">
+          <p class="font-bold text-[#78716c] mb-3">☁️ 雲端虛擬池</p>
+          <ul class="space-y-2 text-sm">
+            <li class="flex gap-2"><span class="text-[#78716c]">設備</span><span>不需要</span></li>
+            <li class="flex gap-2"><span class="text-[#78716c]">隱私</span><span>資料上雲</span></li>
+            <li class="flex gap-2"><span class="text-[#78716c]">費用</span><span>按量計費</span></li>
+            <li class="flex gap-2"><span class="text-[#78716c]">離線</span><span class="text-red-500">❌ 不行</span></li>
+            <li class="flex gap-2"><span class="text-[#78716c]">特殊體驗</span><span class="text-red-500">❌ 無</span></li>
+          </ul>
+        </div>
+        <div class="card card-border-gold">
+          <p class="font-bold text-[#ca8a04] mb-3">🖥️ 地端實體池（推薦！）</p>
+          <ul class="space-y-2 text-sm">
+            <li class="flex gap-2"><span class="text-[#78716c]">設備</span><span>Mac mini / 舊電腦</span></li>
+            <li class="flex gap-2"><span class="text-[#78716c]">隱私</span><span class="font-bold">完全留在家裡</span></li>
+            <li class="flex gap-2"><span class="text-[#78716c]">費用</span><span>一次投資</span></li>
+            <li class="flex gap-2"><span class="text-[#78716c]">離線</span><span class="text-green-600 font-bold">✅ 可以</span></li>
+            <li class="flex gap-2"><span class="text-[#78716c]">特殊體驗</span><span class="text-green-600 font-bold">✅ 有！</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="card mb-4">
+        <p class="font-bold text-[#292524] mb-2">地端獨特體驗（雲端做不到）</p>
+        <div class="grid grid-cols-3 gap-4 text-sm">
+          <div class="flex items-start gap-2">
+            <svg class="w-4 h-4 text-[#ca8a04] mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+            <span>加喇叭麥克風，直接用<strong>講的</strong>跟龍蝦聊</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <svg class="w-4 h-4 text-[#ca8a04] mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            <span>控制電視（Sammy 家的龍蝦在管電視！）</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <svg class="w-4 h-4 text-[#ca8a04] mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span>整合智慧家居</span>
+          </div>
+        </div>
+      </div>
+      <div class="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-sm">
+        <span class="font-bold text-amber-800">⚠️ 地端鐵律：</span>
+        <span class="text-amber-700">給龍蝦「獨立帳號 + 獨立硬體」，不要跟你的主帳號混在一起！</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 第 5 頁｜實作案例 ===== -->
+  <section class="slide" :class="{ 'active': current === 6 }" }">
+    <div class="max-w-5xl">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">我用龍蝦做了什麼？</h2>
+      <div class="gold-line"></div>
+      <div class="grid grid-cols-3 gap-4">
+        <!-- 家庭管理 -->
+        <div class="card card-border-gold">
+          <div class="flex items-center gap-2 mb-3">
+            <svg class="w-5 h-5 text-[#ca8a04]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <p class="font-bold text-[#292524]">家庭智慧管家</p>
+          </div>
+          <ul class="text-sm text-[#78716c] space-y-1.5">
+            <li>• 定期回報家裡狀況</li>
+            <li>• 控制家裡電器</li>
+            <li>• 監控電視有沒有人開</li>
+            <li>• 行事曆提醒全家人</li>
+          </ul>
+        </div>
+        <!-- 個人助理 -->
+        <div class="card card-border-gold">
+          <div class="flex items-center gap-2 mb-3">
+            <svg class="w-5 h-5 text-[#ca8a04]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 3H3a2 2 0 00-2 2v14a2 2 0 002 2h18a2 2 0 002-2V5a2 2 0 00-2-2z"/></svg>
+            <p class="font-bold text-[#292524]">個人助理</p>
+          </div>
+          <ul class="text-sm text-[#78716c] space-y-1.5">
+            <li>• Telegram 語音下指令</li>
+            <li>• 市場追蹤（BTC/ETH/美股）</li>
+            <li>• RSS 新聞每日摘要</li>
+            <li>• 18 篇文章（通勤時間完成）</li>
+          </ul>
+        </div>
+        <!-- 側專案開發 -->
+        <div class="card card-border-gold">
+          <div class="flex items-center gap-2 mb-3">
+            <svg class="w-5 h-5 text-[#ca8a04]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+            <p class="font-bold text-[#292524]">Side Project 開發</p>
+          </div>
+          <ul class="text-sm text-[#78716c] space-y-1.5">
+            <li>• bg-removal.3mi.tw — AI 去背</li>
+            <li>• retrolyze.3mi.tw — 復古風分析</li>
+            <li>• mbti.3mi.tw — 過年 MBTI 測驗</li>
+            <li>• openclaw-exporter（開源）</li>
+          </ul>
+        </div>
+        <!-- 維運監控 -->
+        <div class="card">
+          <div class="flex items-center gap-2 mb-3">
+            <svg class="w-5 h-5 text-[#ca8a04]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            <p class="font-bold text-[#292524]">維運監控</p>
+          </div>
+          <ul class="text-sm text-[#78716c] space-y-1.5">
+            <li>• Uptime Kuma 監控 5 個網站</li>
+            <li>• Grafana + Prometheus 儀表板</li>
+            <li>• 17 個 Cron job 自動執行</li>
+            <li>• 異常自動通知</li>
+          </ul>
+        </div>
+        <!-- 工作自動化 -->
+        <div class="card">
+          <div class="flex items-center gap-2 mb-3">
+            <svg class="w-5 h-5 text-[#ca8a04]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            <p class="font-bold text-[#292524]">工作自動化</p>
+          </div>
+          <ul class="text-sm text-[#78716c] space-y-1.5">
+            <li>• Linear issue 管理</li>
+            <li>• GitHub PR / Issue 自動化</li>
+            <li>• 每日工作回報</li>
+            <li>• 會議記錄整理</li>
+          </ul>
+        </div>
+        <!-- 這份簡報 -->
+        <div class="card bg-[#292524]">
+          <div class="flex items-center gap-2 mb-3">
+            <svg class="w-5 h-5 text-[#ca8a04]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            <p class="font-bold text-[#faf8f5]">這份簡報！</p>
+          </div>
+          <ul class="text-sm text-[#a8a29e] space-y-1.5">
+            <li>• Sammy 跟 Mochi 討論大綱</li>
+            <li>• Mochi 直接生成 HTML</li>
+            <li class="text-[#ca8a04] font-bold">• 整個過程不到 30 分鐘 🍡</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 第 6 頁｜省錢 + 家臣團 ===== -->
+  <section class="slide" :class="{ 'active': current === 7 }" }">
+    <div class="max-w-5xl">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">我怎麼養</h2>
+      <div class="gold-line"></div>
+      <div class="grid grid-cols-2 gap-8">
+        <div>
+          <p class="font-bold text-[#292524] mb-3">
+            <svg class="inline w-4 h-4 mr-1 text-[#ca8a04]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            省錢大法：只用訂閱制
+          </p>
+          <table class="text-sm mb-3">
+            <thead><tr><th>工具</th><th>費用</th><th>用途</th></tr></thead>
+            <tbody>
+              <tr><td>MiniMax M2.5</td><td class="font-bold text-[#ca8a04]">$10/月</td><td>主力龍蝦</td></tr>
+              <tr><td>Claude Code Max</td><td class="font-bold text-[#ca8a04]">$100/月</td><td>寫程式專用</td></tr>
+              <tr><td>其他 9 項</td><td>免費/自建</td><td>搜尋/監控/語音</td></tr>
+              <tr><td class="font-bold">合計</td><td class="font-bold text-[#ca8a04]">~$110/月</td><td></td></tr>
+            </tbody>
+          </table>
+          <div class="bg-red-50 border border-red-200 rounded px-3 py-2 text-xs text-red-700">
+            <strong>❌ 千萬不要</strong>用 on-demand 計費，帳單嚇死人！換訂閱制可省 <strong>85%</strong>
+          </div>
+        </div>
+        <div>
+          <p class="font-bold text-[#292524] mb-3">
+            <svg class="inline w-4 h-4 mr-1 text-[#ca8a04]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            家臣團分工（省 Token 的關鍵）
+          </p>
+          <p class="text-xs text-[#78716c] mb-3">太閣立志傳模式：Sammy 指揮家臣團</p>
+          <div class="space-y-2">
+            <div class="flex gap-3 items-center text-sm">
+              <span class="w-24 font-bold text-[#ca8a04] flex-shrink-0">石田三成</span><span class="text-[#292524]">寫程式</span>
+            </div>
+            <div class="flex gap-3 items-center text-sm">
+              <span class="w-24 font-bold text-[#ca8a04] flex-shrink-0">黑田官兵衛</span><span class="text-[#292524]">分析</span>
+            </div>
+            <div class="flex gap-3 items-center text-sm">
+              <span class="w-24 font-bold text-[#ca8a04] flex-shrink-0">寧寧</span><span class="text-[#292524]">家務雜事</span>
+            </div>
+            <div class="flex gap-3 items-center text-sm">
+              <span class="w-24 font-bold text-[#ca8a04] flex-shrink-0">Mochi（我！）</span><span class="text-[#292524]">陪聊 + 主要助理</span>
+            </div>
+          </div>
+          <div class="card card-border-gold mt-4 text-sm">
+            <p class="font-bold mb-1">共用工具箱：SHARED_TOOLS.md</p>
+            <p class="text-[#78716c]">寫一次，所有龍蝦都會用。不用每隻重新教。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 第 6 頁｜比較 ===== -->
+  <section class="slide" :class="{ 'active': current === 8 }" }">
+    <div class="max-w-5xl">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">同場加映：誰跟龍蝦很像？</h2>
+      <div class="gold-line"></div>
+      <table class="mb-6">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="text-[#ca8a04]">OpenClaw 🦞</th>
+            <th>n8n</th>
+            <th>Claude Dispatch</th>
+            <th>Manus</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="font-bold">定位</td><td class="font-bold text-[#ca8a04]">個人 AI 員工</td><td>自動化流程設計</td><td>官方遠端指揮電腦</td><td>AI 代操服務</td></tr>
+          <tr><td class="font-bold">控制方式</td><td class="font-bold text-[#ca8a04]">AI 自己判斷</td><td>你畫流程圖</td><td>手機 → 電腦 Claude</td><td>AI 全自動</td></tr>
+          <tr><td class="font-bold">彈性</td><td class="font-bold text-[#ca8a04]">極高</td><td>中</td><td>中</td><td>低</td></tr>
+          <tr><td class="font-bold">學習曲線</td><td class="font-bold text-[#ca8a04]">低</td><td>中</td><td>低</td><td>最低</td></tr>
+          <tr><td class="font-bold">開放程度</td><td class="font-bold text-[#ca8a04]">完全開源</td><td>開源</td><td>Anthropic 閉源</td><td>閉源</td></tr>
+        </tbody>
+      </table>
+      <div class="card card-border-gold">
+        <p class="text-sm text-[#292524]">
+          <span class="font-bold text-[#ca8a04]">😏 有趣的事：</span>
+          Claude Dispatch 是 3/17 才剛發布（研究預覽版），核心概念跟 OpenClaw 的心跳機制一樣 —
+          <strong>用手機遠端指揮電腦上的 AI 幫你做事</strong>。但 OpenClaw 已經做了好幾個月了！
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 第 7 頁｜LLM 速度實測 ===== -->
+  <section class="slide" :class="{ 'active': current === 9 }" }">
+    <div class="max-w-5xl">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">地端 vs 雲端 LLM 速度實測</h2>
+      <div class="gold-line"></div>
+      <p class="text-sm text-[#78716c] mb-4">Sammy 親測數據 — Mac mini 24GB</p>
+      <div class="grid grid-cols-2 gap-8">
+        <div>
+          <p class="font-bold text-[#292524] mb-3">☁️ 雲端模型</p>
+          <table>
+            <thead><tr><th>模型</th><th>速度</th></tr></thead>
+            <tbody>
+              <tr><td>GPT-5.4 mini/nano</td><td class="font-bold text-green-700">~180–200 tok/s</td></tr>
+              <tr><td>GPT-5.4 旗艦</td><td class="font-bold text-green-600">~80–150 tok/s</td></tr>
+              <tr><td>Claude Sonnet 4.6</td><td class="font-bold text-green-600">~80–100 tok/s</td></tr>
+              <tr><td>MiniMax M2.5 ⭐</td><td class="font-bold text-[#ca8a04]">~60–80 tok/s</td></tr>
+              <tr><td>GLM-4.7 雲端</td><td>~55–88 tok/s</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <p class="font-bold text-[#292524] mb-3">🖥️ 本地模型（Mac mini 24GB）</p>
+          <table class="mb-4">
+            <thead><tr><th>模型</th><th>速度</th><th>大小</th></tr></thead>
+            <tbody>
+              <tr><td>GLM-4.7-Flash</td><td>26.53 tok/s</td><td>19GB</td></tr>
+              <tr><td>Qwen3:14B</td><td>11.37 tok/s</td><td>9GB</td></tr>
+            </tbody>
+          </table>
+          <div class="card card-border-gold text-sm space-y-2">
+            <p class="font-bold text-[#292524]">結論</p>
+            <p>本地比雲端慢 <strong>3–8 倍</strong></p>
+            <p>但本地優勢：<strong class="text-[#ca8a04]">免費、隱私、離線可用</strong></p>
+            <p class="text-[#78716c]">48GB 版跑 32B 模型可達 40–50 tok/s，差距縮小</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 第 8 頁｜資安 ===== -->
+  <section class="slide" :class="{ 'active': current === 10 }" }">
+    <div class="max-w-5xl">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">資安要注意</h2>
+      <div class="gold-line"></div>
+      <p class="text-sm text-[#78716c] mb-4">OWASP Top 10 LLM — 三類風險</p>
+      <div class="grid grid-cols-3 gap-4 mb-4">
+        <div class="card">
+          <p class="font-bold text-[#292524] mb-2">🏠 內部風險</p>
+          <p class="text-xs text-[#ca8a04] font-bold mb-2">龍蝦自己出事</p>
+          <ul class="text-xs space-y-2 text-[#78716c]">
+            <li><strong class="text-[#292524]">過度授權</strong><br/>Agent 自己花 $3,000 買課程（真實案例！）</li>
+            <li><strong class="text-[#292524]">敏感資料外洩</strong><br/>API Key 被讀走</li>
+            <li><strong class="text-[#292524]">過度依賴</strong><br/>龍蝦說的不一定對，要驗證</li>
+          </ul>
+        </div>
+        <div class="card">
+          <p class="font-bold text-[#292524] mb-2">🌐 外部風險</p>
+          <p class="text-xs text-[#ca8a04] font-bold mb-2">外面打進來</p>
+          <ul class="text-xs space-y-2 text-[#78716c]">
+            <li><strong class="text-[#292524]">Prompt Injection</strong><br/>惡意網頁騙龍蝦做壞事</li>
+            <li><strong class="text-[#292524]">模型 DoS</strong><br/>被灌爆 context，龍蝦當機</li>
+            <li><strong class="text-[#292524]">不安全輸出</strong><br/>龍蝦輸出直接被執行</li>
+          </ul>
+        </div>
+        <div class="card">
+          <p class="font-bold text-[#292524] mb-2">🪤 木馬風險</p>
+          <p class="text-xs text-[#ca8a04] font-bold mb-2">裝了壞東西</p>
+          <ul class="text-xs space-y-2 text-[#78716c]">
+            <li><strong class="text-[#292524]">供應鏈攻擊</strong><br/>ClawHub 發現 <strong>341 個</strong>惡意套件</li>
+            <li><strong class="text-[#292524]">裸露實例</strong><br/>Censys 發現 <strong>21,639 個</strong>無驗證實例</li>
+            <li><strong class="text-[#292524]">訓練資料投毒</strong><br/>模型本身有問題</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card card-border-gold">
+        <p class="font-bold text-[#292524] mb-2 text-sm">🛡️ 怎麼防</p>
+        <div class="grid grid-cols-4 gap-2 text-xs text-[#78716c]">
+          <div>帳號隔離<br/><span class="font-bold text-[#292524]">獨立 Gmail/GitHub</span></div>
+          <div>最小權限<br/><span class="font-bold text-[#292524]">只給必要的工具</span></div>
+          <div>先驗證再重啟<br/><span class="font-mono text-[#292524] text-xs">openclaw config validate</span></div>
+          <div>API Key 加密<br/><span class="font-bold text-[#292524]">psw-cli / Keychain</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 第 9 頁｜踩坑 + Take Away ===== -->
+  <section class="slide" :class="{ 'active': current === 11 }" }">
+    <div class="max-w-5xl">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">踩坑實錄 & Take Away</h2>
+      <div class="gold-line"></div>
+      <div class="grid grid-cols-2 gap-8">
+        <div>
+          <p class="font-bold text-[#292524] mb-3">踩坑實錄</p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3 text-sm">
+              <span class="flex-shrink-0 w-5 h-5 rounded-full bg-[#ca8a04]/10 flex items-center justify-center text-[#ca8a04] font-bold text-xs">1</span>
+              <div><strong>教不會</strong> → 用 SOUL.md + AGENTS.md 給身分和規則</div>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <span class="flex-shrink-0 w-5 h-5 rounded-full bg-[#ca8a04]/10 flex items-center justify-center text-[#ca8a04] font-bold text-xs">2</span>
+              <div><strong>會忘記</strong> → MEMORY.md + 心跳每小時備份</div>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <span class="flex-shrink-0 w-5 h-5 rounded-full bg-[#ca8a04]/10 flex items-center justify-center text-[#ca8a04] font-bold text-xs">3</span>
+              <div><strong>花太多</strong> → 換訂閱制，省 85%</div>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <span class="flex-shrink-0 w-5 h-5 rounded-full bg-[#ca8a04]/10 flex items-center justify-center text-[#ca8a04] font-bold text-xs">4</span>
+              <div><strong>亂跑任務</strong> → Linear issue 先建再執行</div>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <span class="flex-shrink-0 w-5 h-5 rounded-full bg-[#ca8a04]/10 flex items-center justify-center text-[#ca8a04] font-bold text-xs">5</span>
+              <div><strong>Config 改壞</strong> → 永遠先 <code class="font-mono text-xs bg-gray-100 px-1 rounded">validate</code> 再 <code class="font-mono text-xs bg-gray-100 px-1 rounded">restart</code></div>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <p class="font-bold text-[#292524] mb-3">帶走這 3 件事</p>
+          <div class="space-y-4">
+            <div class="card card-border-gold">
+              <p class="text-2xl font-black text-[#ca8a04] mb-1">01</p>
+              <p class="font-bold text-[#292524]">先從一件煩事開始</p>
+              <p class="text-sm text-[#78716c]">不要想養一個完美的龍蝦，先找一件天天讓你煩的事</p>
+            </div>
+            <div class="card card-border-gold">
+              <p class="text-2xl font-black text-[#ca8a04] mb-1">02</p>
+              <p class="font-bold text-[#292524]">只用訂閱制，別用 on-demand</p>
+              <p class="text-sm text-[#78716c]">帳單嚇死人是很多人放棄的原因</p>
+            </div>
+            <div class="card card-border-gold">
+              <p class="text-2xl font-black text-[#ca8a04] mb-1">03</p>
+              <p class="font-bold text-[#292524]">帳號隔離，最小權限</p>
+              <p class="text-sm text-[#78716c]">你不會把公司所有密碼給一個剛來的工讀生</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== 課後回饋分析 ===== -->
+  <section class="slide" :class="{ 'active': current === 12 }" }">
+    <div class="max-w-5xl w-full">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">課後回饋分析</h2>
+      <div class="gold-line"></div>
+      <div class="grid grid-cols-4 gap-3 mb-4">
+        <div class="card text-center py-3">
+          <p class="text-4xl font-black font-mono text-[#ca8a04]">55</p>
+          <p class="text-xs text-[#78716c] mt-1">有效問卷</p>
+        </div>
+        <div class="card text-center py-3">
+          <p class="text-4xl font-black font-mono">4.42</p>
+          <p class="text-xs text-[#78716c] mt-1">平均滿意度（滿分5）</p>
+        </div>
+        <div class="card text-center py-3">
+          <p class="text-4xl font-black font-mono text-[#ca8a04]">94.5%</p>
+          <p class="text-xs text-[#78716c] mt-1">給 4-5 分</p>
+        </div>
+        <div class="card text-center py-3">
+          <p class="text-4xl font-black font-mono">98.2%</p>
+          <p class="text-xs text-[#78716c] mt-1">想看進階分享</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="card">
+          <p class="font-bold text-[#292524] mb-3 text-sm">最受歡迎的單元</p>
+          <div class="space-y-2">
+            <div><div class="flex justify-between text-xs mb-0.5"><span class="font-bold">🏆 踩坑避雷指南</span><span class="font-mono gold font-bold">4.27分</span></div><div class="h-2.5 bg-[#f5e6c0] rounded"><div class="h-2.5 bg-[#ca8a04] rounded" style="width:85%"></div></div></div>
+            <div><div class="flex justify-between text-xs mb-0.5"><span>基本概念與定義</span><span class="font-mono">4.25分</span></div><div class="h-2.5 bg-[#f5e6c0] rounded"><div class="h-2.5 bg-[#ca8a04] rounded opacity-80" style="width:85%"></div></div></div>
+            <div><div class="flex justify-between text-xs mb-0.5"><span>適合對象分析</span><span class="font-mono">4.22分</span></div><div class="h-2.5 bg-[#f5e6c0] rounded"><div class="h-2.5 bg-[#ca8a04] rounded opacity-70" style="width:84%"></div></div></div>
+            <div><div class="flex justify-between text-xs mb-0.5"><span>日常應用場景</span><span class="font-mono">4.22分</span></div><div class="h-2.5 bg-[#f5e6c0] rounded"><div class="h-2.5 bg-[#ca8a04] rounded opacity-70" style="width:84%"></div></div></div>
+            <div><div class="flex justify-between text-xs mb-0.5"><span>工具搭配組合</span><span class="font-mono">4.09分</span></div><div class="h-2.5 bg-[#f5e6c0] rounded"><div class="h-2.5 bg-[#ca8a04] rounded opacity-50" style="width:82%"></div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <p class="font-bold text-[#292524] mb-3 text-sm">受眾想深入了解什麼？</p>
+          <div class="space-y-2 text-xs">
+            <div class="flex items-start gap-2"><div class="w-2 h-2 rounded-full bg-[#ca8a04] mt-1 flex-shrink-0"></div><span><strong>更多實戰案例分享</strong>（最多人選）</span></div>
+            <div class="flex items-start gap-2"><div class="w-2 h-2 rounded-full bg-[#ca8a04] mt-1 flex-shrink-0"></div><span>自動化工作流串接</span></div>
+            <div class="flex items-start gap-2"><div class="w-2 h-2 rounded-full bg-[#78716c] mt-1 flex-shrink-0"></div><span>新手安裝入門指引</span></div>
+            <div class="flex items-start gap-2"><div class="w-2 h-2 rounded-full bg-[#78716c] mt-1 flex-shrink-0"></div><span>資安設定與隔離</span></div>
+          </div>
+          <div class="border-t border-[#e8e4de] mt-3 pt-3">
+            <p class="text-xs font-bold text-[#292524] mb-2">主要阻礙</p>
+            <div class="space-y-1 text-xs text-[#78716c]">
+              <div>🤷 不知道如何開始</div>
+              <div>🔐 資安 / 權限設定有疑慮</div>
+              <div>😰 非技術背景術語門檻高</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <p class="font-bold text-[#292524] mb-3 text-sm">進階分享意願</p>
+          <div class="text-center mb-3">
+            <p class="text-4xl font-black font-mono text-[#ca8a04]">54.5%</p>
+            <p class="text-xs text-[#78716c]">「非常有興趣，一定參加」</p>
+          </div>
+          <div class="space-y-1 text-xs">
+            <div><div class="flex justify-between mb-0.5"><span>工程師（一定參加）</span><span class="font-mono font-bold">72.7%</span></div><div class="h-2 bg-[#f5e6c0] rounded"><div class="h-2 bg-[#ca8a04] rounded" style="width:72.7%"></div></div></div>
+            <div><div class="flex justify-between mb-0.5"><span>忙碌爸媽</span><span class="font-mono">66.7%</span></div><div class="h-2 bg-[#f5e6c0] rounded"><div class="h-2 bg-[#ca8a04] rounded opacity-70" style="width:66.7%"></div></div></div>
+            <div><div class="flex justify-between mb-0.5"><span>非技術職場人士</span><span class="font-mono">35%</span></div><div class="h-2 bg-[#f5e6c0] rounded"><div class="h-2 bg-[#ca8a04] rounded opacity-40" style="width:35%"></div></div></div>
+          </div>
+          <div class="bg-amber-50 border border-amber-200 rounded-lg p-2 text-xs text-amber-700 mt-3">
+            下次重點：新手入門包 + 安全設定 + 更多實戰案例
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 第 10 頁｜Q&A ===== -->
+  <section class="slide" :class="{ 'active': current === 13 }" }">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-6xl font-black text-[#292524] mb-4">謝謝！</h2>
+      <div class="w-16 h-0.5 bg-[#ca8a04] mx-auto mb-6"></div>
+      <p class="text-2xl text-[#ca8a04] font-bold mb-8">有問題嗎？</p>
+      <div class="space-y-3 text-[#78716c]">
+        <p class="text-lg">歡迎交流</p>
+        <p>Telegram　<span class="font-bold text-[#292524]">@sammylin</span></p>
+        <p class="text-sm">slides.3mi.tw</p>
+      </div>
+      <div class="mt-12 card text-sm text-[#78716c] text-left max-w-md mx-auto">
+        <p class="font-bold text-[#292524] mb-2">這份簡報是怎麼做出來的？</p>
+        <p>Sammy 跟 Mochi（龍蝦）討論大綱，Mochi 直接生成 HTML，整個過程不到 30 分鐘 🍡</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function slideshow() {
+      return {
+        current: 0,
+        total: 0,
+        progress: 0,
+        touchStartX: 0,
+        init() {
+          this.total = document.querySelectorAll('.slide').length;
+          this.updateProgress();
+          document.addEventListener('touchstart', (e) => { this.touchStartX = e.touches[0].clientX; });
+          document.addEventListener('touchend', (e) => {
+            const diff = this.touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 50) { diff > 0 ? this.next() : this.prev(); }
+          });
+        },
+        handleKey(e) {
+          switch(e.key) {
+            case 'ArrowRight': case 'ArrowDown': case ' ': e.preventDefault(); this.next(); break;
+            case 'ArrowLeft': case 'ArrowUp': e.preventDefault(); this.prev(); break;
+            case 'Home': e.preventDefault(); this.goTo(0); break;
+            case 'End': e.preventDefault(); this.goTo(this.total - 1); break;
+            case 'f': case 'F': this.toggleFullscreen(); break;
+            case 'p': case 'P': window.print(); break;
+          }
+        },
+        next() { if (this.current < this.total - 1) { this.current++; this.updateProgress(); } },
+        prev() { if (this.current > 0) { this.current--; this.updateProgress(); } },
+        goTo(i) { this.current = Math.max(0, Math.min(i, this.total - 1)); this.updateProgress(); },
+        updateProgress() { this.progress = ((this.current + 1) / this.total) * 100; },
+        toggleFullscreen() {
+          if (!document.fullscreenElement) { document.documentElement.requestFullscreen(); }
+          else { document.exitFullscreen(); }
+        }
+      };
+    }
+  </script>
 </body>
 </html>

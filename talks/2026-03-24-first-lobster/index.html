@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>你的第一隻龍蝦 — OpenClaw 入門實戰</title>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+@import url("https://font.emtech.cc/css/GenSenRoundedTW");
+@import url("https://font.emtech.cc/css/GenJyuuGothicP");
+@import url("https://font.emtech.cc/css/MaokenAssortedSansTC");
+@import url("https://font.emtech.cc/css/ChenYuLuoYan");
+@import url("https://font.emtech.cc/css/UnboundedSans");
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"GenJyuuGothicP",sans-serif;background:#1a1a1a;overflow:hidden;height:100vh;width:100vw}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;background:#faf8f5;display:flex;flex-direction:column;padding:5vh 5vw;opacity:0;transition:opacity 0.35s ease,transform 0.35s ease;transform:translateX(50px);pointer-events:none}
+.slide.active{opacity:1;transform:translateX(0);pointer-events:all}
+.slide.prev{opacity:0;transform:translateX(-50px)}
+.progress-bar{position:fixed;bottom:0;left:0;height:3px;background:#ca8a04;transition:width 0.3s ease;z-index:100}
+.slide-num{position:fixed;bottom:1.5vh;right:3vw;font-family:"JetBrains Mono",monospace;font-size:0.85rem;color:#a8a29e;z-index:100}
+.nav-btn{position:fixed;bottom:1.5vh;z-index:100;background:rgba(202,138,4,0.12);border:1px solid rgba(202,138,4,0.25);color:#ca8a04;width:2.2rem;height:2.2rem;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s}
+.nav-btn:hover{background:rgba(202,138,4,0.25)}
+.nav-prev{left:calc(50% - 2.8rem)}
+.nav-next{left:calc(50% + 0.6rem)}
+.tag{font-family:"MaokenAssortedSansTC",sans-serif;font-size:0.85rem;padding:0.2rem 0.7rem;border-radius:999px;border:1.5px solid #ca8a04;color:#ca8a04;display:inline-block}
+h2{font-size:clamp(2rem,3.8vw,3.2rem);font-weight:900;color:#292524;line-height:1.2;font-family:"GenSenRoundedTW",sans-serif}
+.gold{color:#ca8a04}
+.card{background:white;border-radius:1rem;padding:1.75rem 2rem;box-shadow:0 2px 10px rgba(0,0,0,0.05);border:1px solid #e7e5e4}
+.card-gold{background:#fffbeb;border:1.5px solid #fde68a;border-radius:1rem;padding:1.75rem 2rem}
+pre{font-family:"JetBrains Mono",monospace;background:#292524;color:#fde68a;padding:1.25rem 1.75rem;border-radius:0.75rem;font-size:clamp(0.9rem,1.4vw,1.15rem);line-height:1.8}
+.live-badge{background:#dc2626;color:white;font-size:0.85rem;font-weight:700;padding:0.25rem 0.9rem;border-radius:999px;display:inline-flex;align-items:center;gap:0.4rem;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.7}}
+</style>
+</head>
+<body x-data="{current:0,total:15,prev:-1,go(n){this.prev=this.current;this.current=Math.max(0,Math.min(this.total-1,n));setTimeout(()=>{this.prev=-1},400)},next(){this.go(this.current+1)},back(){this.go(this.current-1)}}"
+@keydown.window="if($event.key==='ArrowRight'||$event.key===' '){$event.preventDefault();next()}if($event.key==='ArrowLeft'){$event.preventDefault();back()}if($event.key==='f'||$event.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}">
+<div class="progress-bar" :style="`width:${(current/(total-1))*100}%`"></div>
+<div class="slide-num" x-text="`${current+1} / ${total}`"></div>
+<button class="nav-btn nav-prev" @click="back()" x-show="current>0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15,18 9,12 15,6"/></svg></button>
+<button class="nav-btn nav-next" @click="next()" x-show="current<total-1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9,18 15,12 9,6"/></svg></button>
+
+<div class="slide" :class="{active:current===0,prev:prev===0}" style="padding:0;background:url('https://cdn.3mi.tw/slides/first-lobster/lobster-cover-wide.png?v=2') center/cover no-repeat;">
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:5vh 5vw;background:linear-gradient(to right, rgba(250,248,245,0.88) 0%, rgba(250,248,245,0.75) 55%, rgba(250,248,245,0.15) 100%);">
+    <div style="max-width:55%;">
+      <h1 style="font-size:clamp(3rem,6vw,5.5rem);font-weight:900;color:#292524;line-height:1.1;font-family:'GenSenRoundedTW',sans-serif;">你的第一隻<span style="color:#ca8a04;">龍蝦</span></h1>
+      <p style="font-size:clamp(1.3rem,2.5vw,2rem);color:#78716c;margin-top:0.75rem;font-weight:300;">OpenClaw 入門實戰</p>
+      <div style="margin-top:2.5rem;display:flex;flex-direction:column;gap:0.5rem;">
+        <div style="width:3rem;height:2px;background:#ca8a04;border-radius:2px;"></div>
+        <p style="font-size:1.3rem;color:#292524;font-weight:600;">林毅民 Sammy Lin</p>
+        <p style="font-size:1.1rem;color:#78716c;">Sr. Principal Architect，Delta ESG Consulting Office</p>
+        <div style="display:flex;gap:1rem;margin-top:0.5rem;"><span class="tag">線上直播</span><span class="tag">2026</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" :class="{active:current===1,prev:prev===1}">
+  <div style="margin-bottom:1.5rem;"><span class="tag">Timeline</span><h2 style="margin-top:0.6rem;">關於我 — 一位架構師的 <span class="gold">AI 轉型</span>旅程</h2></div>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+    <svg viewBox="0 0 900 290" style="width:100%;max-width:90vw;height:100%;min-height:300px;max-height:75vh;">
+      <defs><marker id="aG" markerWidth="9" markerHeight="9" refX="4.5" refY="4.5" orient="auto"><polygon points="0,0 9,4.5 0,9" fill="#ca8a04"/></marker></defs>
+      <line x1="60" y1="142" x2="858" y2="142" stroke="#e7e5e4" stroke-width="4"/>
+      <polygon points="858,135 874,142 858,149" fill="#ca8a04"/>
+      <circle cx="60" cy="142" r="6" fill="#d6d3d1"/>
+      <text x="60" y="168" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="#a8a29e">2017</text>
+      <circle cx="195" cy="142" r="14" fill="#ca8a04" opacity="0.2"/>
+      <circle cx="195" cy="142" r="9" fill="#ca8a04"/>
+      <circle cx="195" cy="142" r="3.5" fill="white"/>
+      <text x="195" y="104" text-anchor="middle" font-family="GenJyuuGothicP" font-size="20" font-weight="700" fill="#292524">17LIVE</text>
+      <text x="195" y="124" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="#ca8a04">2017-2023</text>
+      <rect x="108" y="162" width="175" height="88" rx="10" fill="white" stroke="#e7e5e4" stroke-width="1.5"/>
+      <text x="195" y="186" text-anchor="middle" font-family="GenJyuuGothicP" font-size="15" font-weight="700" fill="#292524">直播平台架構</text>
+      <text x="195" y="208" text-anchor="middle" font-family="GenJyuuGothicP" font-size="13" fill="#78716c">百萬用戶後端</text>
+      <text x="195" y="228" text-anchor="middle" font-family="GenJyuuGothicP" font-size="13" fill="#78716c">AI 語音偵測落地</text>
+      <circle cx="475" cy="142" r="14" fill="#ca8a04" opacity="0.2"/>
+      <circle cx="475" cy="142" r="9" fill="#ca8a04"/>
+      <circle cx="475" cy="142" r="3.5" fill="white"/>
+      <text x="475" y="104" text-anchor="middle" font-family="GenJyuuGothicP" font-size="20" font-weight="700" fill="#292524">中信銀行</text>
+      <text x="475" y="124" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="#ca8a04">2023-2025</text>
+      <rect x="388" y="162" width="175" height="88" rx="10" fill="white" stroke="#e7e5e4" stroke-width="1.5"/>
+      <text x="475" y="186" text-anchor="middle" font-family="GenJyuuGothicP" font-size="15" font-weight="700" fill="#292524">金融科技</text>
+      <text x="475" y="208" text-anchor="middle" font-family="GenJyuuGothicP" font-size="13" fill="#78716c">雲原生轉型</text>
+      <text x="475" y="228" text-anchor="middle" font-family="GenJyuuGothicP" font-size="13" fill="#78716c">資安合規架構</text>
+      <circle cx="765" cy="142" r="18" fill="#ca8a04" opacity="0.25"/>
+      <circle cx="765" cy="142" r="12" fill="#ca8a04"/>
+      <circle cx="765" cy="142" r="4.5" fill="white"/>
+      <text x="765" y="100" text-anchor="middle" font-family="GenJyuuGothicP" font-size="19" font-weight="700" fill="#ca8a04">Delta ESG</text>
+      <text x="765" y="120" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="#ca8a04">2025 - Now</text>
+      <rect x="678" y="162" width="180" height="88" rx="10" fill="#fffbeb" stroke="#fde68a" stroke-width="2"/>
+      <text x="768" y="186" text-anchor="middle" font-family="GenJyuuGothicP" font-size="15" font-weight="700" fill="#ca8a04">ESG 科技</text>
+      <text x="768" y="208" text-anchor="middle" font-family="GenJyuuGothicP" font-size="13" fill="#78716c">AI Agent 落地</text>
+      <text x="768" y="228" text-anchor="middle" font-family="GenJyuuGothicP" font-size="13" fill="#78716c">OpenClaw 傳教士</text>
+    </svg>
+  </div>
+</div>
+
+<div class="slide" :class="{active:current===2,prev:prev===2}">
+  <div style="margin-bottom:1.5rem;"><span class="tag">Pain / Gain</span><h2 style="margin-top:0.6rem;">你的 AI 用法<span class="gold">卡在哪？</span></h2></div>
+  <div style="flex:1;display:flex;align-items:stretch;gap:2.5rem;max-width:90vw;width:100%;">
+    <div style="flex:1;display:flex;flex-direction:column;gap:1.2rem;">
+      <div style="background:#fef2f2;border:2px solid #fecaca;border-radius:1rem;padding:1.2rem 1.75rem;display:flex;align-items:center;gap:0.75rem;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <h3 style="color:#dc2626;font-size:1.5rem;">現狀的痛</h3>
+      </div>
+      <div style="flex:1;">
+        <svg viewBox="0 0 340 310" style="width:100%;height:100%;max-height:300px;">
+          <defs><marker id="aR2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="#fca5a5"/></marker></defs>
+          <rect x="10" y="10" width="320" height="54" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+          <text x="170" y="42" text-anchor="middle" font-family="GenJyuuGothicP" font-size="17" fill="#292524">打開 ChatGPT</text>
+          <line x1="170" y1="64" x2="170" y2="83" stroke="#fca5a5" stroke-width="2" marker-end="url(#aR2)"/>
+          <rect x="10" y="88" width="320" height="54" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+          <text x="170" y="120" text-anchor="middle" font-family="GenJyuuGothicP" font-size="17" fill="#292524">打字問問題</text>
+          <line x1="170" y1="142" x2="170" y2="161" stroke="#fca5a5" stroke-width="2" marker-end="url(#aR2)"/>
+          <rect x="10" y="166" width="320" height="54" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+          <text x="170" y="198" text-anchor="middle" font-family="GenJyuuGothicP" font-size="17" fill="#292524">複製貼上</text>
+          <line x1="170" y1="220" x2="170" y2="239" stroke="#fca5a5" stroke-width="2" marker-end="url(#aR2)"/>
+          <rect x="10" y="244" width="320" height="54" rx="10" fill="#fee2e2" stroke="#f87171" stroke-width="2"/>
+          <text x="170" y="276" text-anchor="middle" font-family="GenJyuuGothicP" font-size="17" font-weight="700" fill="#dc2626">關掉，明天重來</text>
+        </svg>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;">
+      <svg width="52" height="52" viewBox="0 0 52 52"><circle cx="26" cy="26" r="24" fill="#ca8a04" opacity="0.1" stroke="#ca8a04" stroke-width="1.5"/><line x1="16" y1="26" x2="36" y2="26" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round"/><polyline points="28,19 37,26 28,33" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:1.2rem;">
+      <div style="background:#f0fdf4;border:2px solid #bbf7d0;border-radius:1rem;padding:1.2rem 1.75rem;display:flex;align-items:center;gap:0.75rem;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <h3 style="color:#16a34a;font-size:1.5rem;">理想的爽</h3>
+      </div>
+      <div class="card" style="flex:1;border-left:4px solid #ca8a04;display:flex;align-items:center;gap:1.5rem;">
+        <svg width="42" height="42" viewBox="0 0 42 42" style="flex-shrink:0;"><circle cx="21" cy="21" r="19" fill="#fffbeb"/><path d="M21 9 C14 9 9 14 9 21" stroke="#ca8a04" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="21" cy="21" r="5" fill="#ca8a04"/></svg>
+        <div><p style="font-weight:700;font-size:1.25rem;color:#292524;">AI 記得你</p><p style="font-size:1.1rem;color:#78716c;">上下文、習慣全記住</p></div>
+      </div>
+      <div class="card" style="flex:1;border-left:4px solid #ca8a04;display:flex;align-items:center;gap:1.5rem;">
+        <svg width="42" height="42" viewBox="0 0 42 42" style="flex-shrink:0;"><circle cx="21" cy="21" r="19" fill="#fffbeb"/><polyline points="10,21 18,29 32,13" stroke="#ca8a04" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div><p style="font-weight:700;font-size:1.25rem;color:#292524;">主動做事</p><p style="font-size:1.1rem;color:#78716c;">你睡著時它還在工作</p></div>
+      </div>
+      <div class="card" style="flex:1;border-left:4px solid #ca8a04;display:flex;align-items:center;gap:1.5rem;">
+        <svg width="42" height="42" viewBox="0 0 42 42" style="flex-shrink:0;"><circle cx="21" cy="21" r="19" fill="#fffbeb"/><circle cx="21" cy="21" r="8" stroke="#ca8a04" stroke-width="2.5" fill="none"/><line x1="21" y1="8" x2="21" y2="13" stroke="#ca8a04" stroke-width="2"/><line x1="21" y1="29" x2="21" y2="34" stroke="#ca8a04" stroke-width="2"/><line x1="8" y1="21" x2="13" y2="21" stroke="#ca8a04" stroke-width="2"/><line x1="29" y1="21" x2="34" y2="21" stroke="#ca8a04" stroke-width="2"/></svg>
+        <div><p style="font-weight:700;font-size:1.25rem;color:#292524;">24 小時在線</p><p style="font-size:1.1rem;color:#78716c;">Telegram 隨傳隨到</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" :class="{active:current===3,prev:prev===3}">
+  <div style="margin-bottom:1.5rem;"><span class="tag">2x2 Matrix</span><h2 style="margin-top:0.6rem;">ChatGPT <span class="gold">vs</span> OpenClaw</h2></div>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+    <svg viewBox="0 0 750 480" style="width:100%;max-width:90vw;max-height:64vh;height:auto;">
+      <defs><marker id="aD2" markerWidth="9" markerHeight="9" refX="4.5" refY="4.5" orient="auto"><polygon points="0,0 9,4.5 0,9" fill="#292524"/></marker></defs>
+      <rect x="72" y="22" width="278" height="208" rx="6" fill="#fef2f2" opacity="0.5"/>
+      <rect x="370" y="22" width="278" height="208" rx="6" fill="#fef9c3" opacity="0.4"/>
+      <rect x="72" y="250" width="278" height="208" rx="6" fill="#f0fdf4" opacity="0.35"/>
+      <rect x="370" y="250" width="278" height="208" rx="6" fill="#fffbeb" opacity="0.85"/>
+      <line x1="72" y1="458" x2="650" y2="458" stroke="#292524" stroke-width="2.5" marker-end="url(#aD2)"/>
+      <line x1="72" y1="458" x2="72" y2="22" stroke="#292524" stroke-width="2.5" marker-end="url(#aD2)"/>
+      <line x1="72" y1="238" x2="648" y2="238" stroke="#d6d3d1" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <line x1="360" y1="22" x2="360" y2="458" stroke="#d6d3d1" stroke-width="1.5" stroke-dasharray="6,4"/>
+      <text x="215" y="478" text-anchor="middle" font-family="GenJyuuGothicP" font-size="15" fill="#78716c">被動</text>
+      <text x="510" y="478" text-anchor="middle" font-family="GenJyuuGothicP" font-size="15" fill="#78716c">主動</text>
+      <text x="34" y="360" text-anchor="middle" font-family="GenJyuuGothicP" font-size="15" fill="#78716c" transform="rotate(-90 34 360)">單次</text>
+      <text x="34" y="125" text-anchor="middle" font-family="GenJyuuGothicP" font-size="15" fill="#78716c" transform="rotate(-90 34 125)">持續</text>
+      <circle cx="200" cy="360" r="72" fill="#f87171" opacity="0.13" stroke="#f87171" stroke-width="2"/>
+      <text x="200" y="349" text-anchor="middle" font-family="GenJyuuGothicP" font-size="21" font-weight="700" fill="#292524">ChatGPT</text>
+      <text x="200" y="372" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" fill="#78716c">被動 + 單次</text>
+      <text x="200" y="393" text-anchor="middle" font-family="GenJyuuGothicP" font-size="13" fill="#a8a29e">問一句答一句</text>
+      <circle cx="514" cy="365" r="50" fill="#86efac" opacity="0.3" stroke="#86efac" stroke-width="1.5"/>
+      <text x="514" y="360" text-anchor="middle" font-family="GenJyuuGothicP" font-size="16" fill="#292524" font-weight="600">n8n / Make</text>
+      <text x="514" y="381" text-anchor="middle" font-family="GenJyuuGothicP" font-size="13" fill="#78716c">主動但單次</text>
+      <circle cx="514" cy="122" r="88" fill="#ca8a04" opacity="0.12" stroke="#ca8a04" stroke-width="2.5"/>
+      <text x="514" y="104" text-anchor="middle" font-family="GenJyuuGothicP" font-size="24" font-weight="900" fill="#ca8a04">OpenClaw</text>
+      <text x="514" y="131" text-anchor="middle" font-family="GenJyuuGothicP" font-size="16" fill="#292524">主動 + 持續</text>
+      <text x="514" y="154" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" fill="#78716c">你的 AI 同事</text>
+      <circle cx="200" cy="122" r="40" fill="#cbd5e1" opacity="0.4" stroke="#94a3b8" stroke-width="1.5"/>
+      <text x="200" y="117" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" fill="#64748b">傳統助理</text>
+      <text x="200" y="136" text-anchor="middle" font-family="GenJyuuGothicP" font-size="12" fill="#94a3b8">持續但被動</text>
+    </svg>
+  </div>
+</div>
+
+<div class="slide" :class="{active:current===4,prev:prev===4}">
+  <div style="margin-bottom:1.5rem;"><span class="tag">Stepping Stones</span><h2 style="margin-top:0.6rem;">你現在在<span class="gold">哪一步</span>？</h2></div>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+    <svg viewBox="0 0 900 370" style="width:100%;max-width:90vw;max-height:55vh;height:auto;">
+      <defs><marker id="aSt" markerWidth="9" markerHeight="9" refX="4.5" refY="4.5" orient="auto"><polygon points="0,0 9,4.5 0,9" fill="#ca8a04"/></marker></defs>
+      <rect x="0" y="262" width="900" height="108" fill="#dbeafe" opacity="0.45"/>
+      <path d="M0 270 Q110 262 220 270 Q330 278 440 270 Q550 262 660 270 Q770 278 880 270" fill="none" stroke="#93c5fd" stroke-width="1.8" opacity="0.6"/>
+      <ellipse cx="152" cy="263" rx="115" ry="37" fill="#c7c2be"/>
+      <ellipse cx="152" cy="256" rx="115" ry="37" fill="#e7e5e4" stroke="#c7c2be" stroke-width="2"/>
+      <text x="152" y="244" text-anchor="middle" font-family="GenJyuuGothicP" font-size="17" font-weight="700" fill="#78716c">ChatGPT 用戶</text>
+      <text x="152" y="267" text-anchor="middle" font-family="GenJyuuGothicP" font-size="13" fill="#a8a29e">偶爾問，常常忘</text>
+      <path d="M272 234 Q344 184 418 234" fill="none" stroke="#ca8a04" stroke-width="2.5" stroke-dasharray="8,5" marker-end="url(#aSt)"/>
+      <text x="344" y="179" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" fill="#ca8a04">想要自動化</text>
+      <ellipse cx="455" cy="254" rx="120" ry="38" fill="#c7c2be"/>
+      <ellipse cx="455" cy="247" rx="120" ry="38" fill="#e7e5e4" stroke="#c7c2be" stroke-width="2"/>
+      <text x="455" y="235" text-anchor="middle" font-family="GenJyuuGothicP" font-size="17" font-weight="700" fill="#78716c">n8n / Make</text>
+      <text x="455" y="258" text-anchor="middle" font-family="GenJyuuGothicP" font-size="13" fill="#a8a29e">Workflow 自動化</text>
+      <path d="M578 224 Q654 174 728 224" fill="none" stroke="#ca8a04" stroke-width="2.5" stroke-dasharray="8,5" marker-end="url(#aSt)"/>
+      <text x="653" y="168" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" fill="#ca8a04">要 AI 同事</text>
+      <ellipse cx="795" cy="245" rx="105" ry="44" fill="#b45309" opacity="0.2"/>
+      <ellipse cx="795" cy="238" rx="108" ry="44" fill="#fffbeb" stroke="#ca8a04" stroke-width="3"/>
+      <text x="795" y="221" text-anchor="middle" font-family="GenJyuuGothicP" font-size="20" font-weight="900" fill="#ca8a04">OpenClaw</text>
+      <text x="795" y="248" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" fill="#292524">AI 同事 + 24h 管家</text>
+      <circle cx="795" cy="238" r="58" fill="none" stroke="#ca8a04" stroke-width="1" opacity="0.35" stroke-dasharray="4,4"/>
+      <circle cx="795" cy="152" r="14" fill="#ca8a04"/>
+      <line x1="795" y1="166" x2="795" y2="188" stroke="#ca8a04" stroke-width="3" stroke-linecap="round"/>
+      <line x1="784" y1="174" x2="806" y2="174" stroke="#ca8a04" stroke-width="3" stroke-linecap="round"/>
+      <line x1="795" y1="188" x2="784" y2="205" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="795" y1="188" x2="806" y2="205" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round"/>
+      <rect x="78" y="15" width="148" height="44" rx="8" fill="#f5f5f4" stroke="#e7e5e4"/>
+      <text x="152" y="33" text-anchor="middle" font-family="GenJyuuGothicP" font-size="12" fill="#a8a29e">階段 1</text>
+      <text x="152" y="52" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" fill="#78716c" font-weight="700">試用 AI</text>
+      <rect x="382" y="15" width="148" height="44" rx="8" fill="#f5f5f4" stroke="#e7e5e4"/>
+      <text x="456" y="33" text-anchor="middle" font-family="GenJyuuGothicP" font-size="12" fill="#a8a29e">階段 2</text>
+      <text x="456" y="52" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" fill="#78716c" font-weight="700">自動化</text>
+      <rect x="722" y="15" width="148" height="44" rx="8" fill="#fffbeb" stroke="#ca8a04" stroke-width="2"/>
+      <text x="796" y="33" text-anchor="middle" font-family="GenJyuuGothicP" font-size="12" fill="#ca8a04">階段 3</text>
+      <text x="796" y="52" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" fill="#ca8a04" font-weight="700">AI 同事</text>
+    </svg>
+  </div>
+</div>
+
+<div class="slide" :class="{active:current===5,prev:prev===5}">
+  <div style="margin-bottom:1.5rem;"><span class="tag">Hub and Spokes</span><h2 style="margin-top:0.6rem;">什麼是 <span class="gold">OpenClaw</span>？</h2></div>
+  <div style="flex:1;display:flex;align-items:center;gap:4vw;max-width:90vw;width:100%;">
+    <div style="flex:1;display:flex;justify-content:center;align-items:center;">
+      <svg viewBox="0 0 420 420" style="width:100%;max-width:55vh;height:auto;">
+        <line x1="210" y1="210" x2="90" y2="72" stroke="#e7e5e4" stroke-width="3"/>
+        <line x1="210" y1="210" x2="330" y2="72" stroke="#e7e5e4" stroke-width="3"/>
+        <line x1="210" y1="210" x2="48" y2="210" stroke="#e7e5e4" stroke-width="3"/>
+        <line x1="210" y1="210" x2="372" y2="210" stroke="#e7e5e4" stroke-width="3"/>
+        <line x1="210" y1="210" x2="90" y2="348" stroke="#e7e5e4" stroke-width="3"/>
+        <line x1="210" y1="210" x2="330" y2="348" stroke="#e7e5e4" stroke-width="3"/>
+        <circle cx="210" cy="210" r="70" fill="#fffbeb" stroke="#ca8a04" stroke-width="3.5"/>
+        <circle cx="210" cy="210" r="54" fill="#ca8a04" opacity="0.08"/>
+        <text x="210" y="200" text-anchor="middle" font-family="GenJyuuGothicP" font-size="20" font-weight="900" fill="#ca8a04">OpenClaw</text>
+        <text x="210" y="226" text-anchor="middle" font-family="JetBrains Mono" font-size="16" fill="#b45309">龍蝦 AI</text>
+        <circle cx="90" cy="72" r="48" fill="white" stroke="#ca8a04" stroke-width="2.5"/>
+        <text x="90" y="66" text-anchor="middle" font-family="GenJyuuGothicP" font-size="20" font-weight="700" fill="#292524">記憶</text>
+        <text x="90" y="88" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" fill="#78716c">永遠記得你</text>
+        <circle cx="330" cy="72" r="48" fill="white" stroke="#ca8a04" stroke-width="2.5"/>
+        <text x="330" y="66" text-anchor="middle" font-family="GenJyuuGothicP" font-size="20" font-weight="700" fill="#292524">個性</text>
+        <text x="330" y="88" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" fill="#78716c">有自己靈魂</text>
+        <circle cx="48" cy="210" r="50" fill="white" stroke="#ca8a04" stroke-width="2.5"/>
+        <text x="48" y="203" text-anchor="middle" font-family="GenJyuuGothicP" font-size="20" font-weight="700" fill="#ca8a04">3000+</text>
+        <text x="48" y="226" text-anchor="middle" font-family="GenJyuuGothicP" font-size="15" fill="#78716c">技能</text>
+        <circle cx="372" cy="210" r="48" fill="white" stroke="#ca8a04" stroke-width="2.5"/>
+        <text x="372" y="203" text-anchor="middle" font-family="GenJyuuGothicP" font-size="20" font-weight="700" fill="#292524">開源</text>
+        <text x="372" y="226" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" fill="#78716c">自主部署</text>
+        <circle cx="90" cy="348" r="48" fill="white" stroke="#ca8a04" stroke-width="2.5"/>
+        <text x="90" y="341" text-anchor="middle" font-family="GenJyuuGothicP" font-size="20" font-weight="700" fill="#292524">排程</text>
+        <text x="90" y="364" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" fill="#78716c">定時自動執行</text>
+        <circle cx="330" cy="348" r="48" fill="white" stroke="#ca8a04" stroke-width="2.5"/>
+        <text x="330" y="341" text-anchor="middle" font-family="GenJyuuGothicP" font-size="22" font-weight="900" fill="#ca8a04">24h</text>
+        <text x="330" y="364" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" fill="#78716c">永不下班</text>
+      </svg>
+    </div>
+    <div style="flex:0 0 40%;display:flex;flex-direction:column;gap:2rem;">
+      <div class="card-gold">
+        <p style="font-size:1.4rem;color:#78716c;font-style:italic;line-height:1.8;">「AI 不會取代你。<br><strong style="color:#292524;font-size:1.5rem;">善用 AI 的人</strong>才會。」</p>
+        <p style="margin-top:1rem;font-size:1.15rem;color:#b45309;font-weight:600;">— Jensen Huang, NVIDIA</p>
+      </div>
+      <div class="card">
+        <p style="font-weight:700;font-size:1.5rem;color:#292524;margin-bottom:1rem;">不只是聊天機器人</p>
+        <div style="display:flex;flex-direction:column;gap:0.9rem;">
+          <div style="display:flex;align-items:center;gap:0.85rem;font-size:1.3rem;color:#44403c;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>在你的機器上跑，資料不外流</div>
+          <div style="display:flex;align-items:center;gap:0.85rem;font-size:1.3rem;color:#44403c;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>連 Telegram、Calendar、GitHub</div>
+          <div style="display:flex;align-items:center;gap:0.85rem;font-size:1.3rem;color:#44403c;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>一行指令裝好，五分鐘上線</div>
+          <div style="display:flex;align-items:center;gap:0.85rem;font-size:1.3rem;color:#44403c;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>自由選 Claude / GPT / Gemini</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" :class="{active:current===6,prev:prev===6}">
+  <div style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+    <div><span class="tag">Recipe</span><h2 style="margin-top:0.6rem;">5 分鐘裝好一隻龍蝦</h2></div>
+    <div class="live-badge"><svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="white"/></svg>LIVE DEMO</div>
+  </div>
+  <div style="flex:1;display:flex;align-items:stretch;gap:2.5rem;max-width:90vw;width:100%;">
+    <div style="flex:0 0 30%;">
+      <svg viewBox="0 0 260 390" style="width:100%;height:100%;max-height:390px;">
+        <line x1="36" y1="28" x2="36" y2="360" stroke="#e7e5e4" stroke-width="2.5"/>
+        <circle cx="36" cy="56" r="21" fill="#ca8a04"/>
+        <text x="36" y="63" text-anchor="middle" font-family="JetBrains Mono" font-size="18" font-weight="700" fill="white">1</text>
+        <text x="72" y="48" font-family="GenJyuuGothicP" font-size="17" font-weight="700" fill="#292524">安裝</text>
+        <text x="72" y="70" font-family="JetBrains Mono" font-size="12" fill="#78716c">npm i -g openclaw</text>
+        <circle cx="36" cy="170" r="21" fill="#ca8a04"/>
+        <text x="36" y="177" text-anchor="middle" font-family="JetBrains Mono" font-size="18" font-weight="700" fill="white">2</text>
+        <text x="72" y="162" font-family="GenJyuuGothicP" font-size="17" font-weight="700" fill="#292524">連 Telegram</text>
+        <text x="72" y="184" font-family="GenJyuuGothicP" font-size="12" fill="#78716c">掃 QR Code，搞定</text>
+        <circle cx="36" cy="284" r="21" fill="#ca8a04"/>
+        <text x="36" y="291" text-anchor="middle" font-family="JetBrains Mono" font-size="18" font-weight="700" fill="white">3</text>
+        <text x="72" y="276" font-family="GenJyuuGothicP" font-size="17" font-weight="700" fill="#292524">第一次對話</text>
+        <text x="72" y="298" font-family="GenJyuuGothicP" font-size="12" fill="#78716c">說你好就開始</text>
+        <circle cx="36" cy="360" r="17" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+        <polyline points="28,360 34,366 46,354" stroke="#16a34a" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="70" y="364" font-family="GenJyuuGothicP" font-size="15" fill="#16a34a" font-weight="700">龍蝦上線了！</text>
+      </svg>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:1.25rem;">
+      <div><p style="font-size:1rem;color:#78716c;margin-bottom:0.6rem;font-weight:600;">Step 1 — 安裝</p><pre>npm install -g openclaw
+openclaw init</pre></div>
+      <div><p style="font-size:1rem;color:#78716c;margin-bottom:0.6rem;font-weight:600;">Step 2 — 啟動並連接</p><pre>openclaw gateway start
+# 掃描 QR Code，30 秒完成</pre></div>
+      <div class="card-gold">
+        <p style="font-weight:700;font-size:1.15rem;color:#292524;margin-bottom:0.75rem;">龍蝦能幫你做什麼？</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1.5rem;">
+          <p style="font-size:1.1rem;color:#44403c;">搜尋整理資料</p><p style="font-size:1.1rem;color:#44403c;">寫程式、建 PR</p>
+          <p style="font-size:1.1rem;color:#44403c;">排程定時執行</p><p style="font-size:1.1rem;color:#44403c;">管理行事曆</p>
+          <p style="font-size:1.1rem;color:#44403c;">生成報告文件</p><p style="font-size:1.1rem;color:#44403c;">控制家庭設備</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" :class="{active:current===7,prev:prev===7}">
+  <div style="margin-bottom:1.5rem;"><span class="tag">Architecture</span><h2 style="margin-top:0.6rem;">案例 1 — <span class="gold">家庭智慧管家</span></h2></div>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+    <svg viewBox="0 0 840 390" style="width:100%;max-width:90vw;max-height:60vh;height:auto;">
+      <rect x="312" y="144" width="218" height="108" rx="18" fill="#fffbeb" stroke="#ca8a04" stroke-width="3"/>
+      <text x="421" y="180" text-anchor="middle" font-family="GenJyuuGothicP" font-size="13" fill="#78716c">Mac Mini</text>
+      <text x="421" y="212" text-anchor="middle" font-family="GenJyuuGothicP" font-size="24" font-weight="900" fill="#ca8a04">龍蝦</text>
+      <text x="421" y="235" text-anchor="middle" font-family="JetBrains Mono" font-size="13" fill="#b45309">OpenClaw</text>
+      <line x1="312" y1="185" x2="188" y2="84" stroke="#ca8a04" stroke-width="2" stroke-dasharray="7,4" opacity="0.6"/>
+      <line x1="312" y1="212" x2="170" y2="212" stroke="#ca8a04" stroke-width="2" stroke-dasharray="7,4" opacity="0.6"/>
+      <line x1="312" y1="235" x2="190" y2="328" stroke="#ca8a04" stroke-width="2" stroke-dasharray="7,4" opacity="0.6"/>
+      <line x1="530" y1="185" x2="655" y2="84" stroke="#ca8a04" stroke-width="2" stroke-dasharray="7,4" opacity="0.6"/>
+      <line x1="530" y1="212" x2="672" y2="212" stroke="#ca8a04" stroke-width="2" stroke-dasharray="7,4" opacity="0.6"/>
+      <line x1="530" y1="235" x2="650" y2="328" stroke="#ca8a04" stroke-width="2" stroke-dasharray="7,4" opacity="0.6"/>
+      <rect x="55" y="44" width="136" height="80" rx="12" fill="white" stroke="#e7e5e4" stroke-width="1.5"/>
+      <rect x="65" y="52" width="116" height="42" rx="5" fill="#f5f5f4"/>
+      <line x1="97" y1="94" x2="93" y2="106" stroke="#d6d3d1" stroke-width="2"/><line x1="121" y1="94" x2="125" y2="106" stroke="#d6d3d1" stroke-width="2"/>
+      <line x1="83" y1="106" x2="135" y2="106" stroke="#d6d3d1" stroke-width="2.5" stroke-linecap="round"/>
+      <text x="123" y="114" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" font-weight="600" fill="#292524">智慧電視</text>
+      <rect x="35" y="172" width="136" height="80" rx="12" fill="white" stroke="#e7e5e4" stroke-width="1.5"/>
+      <rect x="55" y="182" width="96" height="42" rx="6" fill="#f5f5f4" stroke="#e7e5e4"/>
+      <circle cx="103" cy="203" r="11" fill="#ca8a04" opacity="0.25" stroke="#ca8a04" stroke-width="1.5"/>
+      <line x1="103" y1="192" x2="103" y2="197" stroke="#ca8a04" stroke-width="2"/>
+      <text x="103" y="238" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" font-weight="600" fill="#292524">智慧電器</text>
+      <rect x="55" y="292" width="136" height="80" rx="12" fill="white" stroke="#e7e5e4" stroke-width="1.5"/>
+      <rect x="65" y="302" width="116" height="56" rx="5" fill="#f5f5f4" stroke="#e7e5e4"/>
+      <line x1="65" y1="320" x2="181" y2="320" stroke="#e7e5e4"/>
+      <rect x="89" y="296" width="4" height="12" rx="2" fill="#ca8a04"/><rect x="109" y="296" width="4" height="12" rx="2" fill="#ca8a04"/>
+      <circle cx="83" cy="336" r="3" fill="#ca8a04" opacity="0.6"/><circle cx="103" cy="336" r="3" fill="#ca8a04" opacity="0.6"/><circle cx="123" cy="336" r="3" fill="#ca8a04" opacity="0.6"/>
+      <text x="123" y="360" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" font-weight="600" fill="#292524">家庭行事曆</text>
+      <rect x="652" y="44" width="136" height="80" rx="12" fill="white" stroke="#e7e5e4" stroke-width="1.5"/>
+      <circle cx="720" cy="74" r="26" fill="#0088cc" opacity="0.1" stroke="#0088cc" stroke-width="1.5"/>
+      <path d="M705 68 L737 56 L727 92 L716 80 L709 86 Z" fill="none" stroke="#0088cc" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="720" y="114" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" font-weight="600" fill="#292524">Telegram</text>
+      <rect x="672" y="172" width="136" height="80" rx="12" fill="white" stroke="#e7e5e4" stroke-width="1.5"/>
+      <rect x="696" y="182" width="52" height="42" rx="6" fill="#f5f5f4" stroke="#e7e5e4"/>
+      <rect x="704" y="190" width="13" height="25" rx="6" fill="#ca8a04" opacity="0.4" stroke="#ca8a04" stroke-width="1.5"/>
+      <path d="M692 224 Q696 212 710 212 Q722 212 726 224" fill="none" stroke="#ca8a04" stroke-width="1.8"/>
+      <text x="720" y="240" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" font-weight="600" fill="#292524">語音控制</text>
+      <rect x="652" y="292" width="136" height="80" rx="12" fill="white" stroke="#e7e5e4" stroke-width="1.5"/>
+      <text x="720" y="325" text-anchor="middle" font-family="GenJyuuGothicP" font-size="18" font-weight="700" fill="#24292f">GitHub</text>
+      <text x="720" y="347" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" fill="#78716c">自動送 PR</text>
+      <text x="720" y="363" text-anchor="middle" font-family="GenJyuuGothicP" font-size="13" fill="#a8a29e">Code Review</text>
+    </svg>
+  </div>
+</div>
+
+<div class="slide" :class="{active:current===8,prev:prev===8}">
+  <div style="margin-bottom:1.5rem;"><span class="tag">Journey</span><h2 style="margin-top:0.6rem;">案例 2 — <span class="gold">碎片時間的槓桿</span></h2></div>
+  <div style="flex:1;display:flex;align-items:stretch;gap:2.5rem;max-width:90vw;width:100%;">
+    <div style="flex:1.2;">
+      <svg viewBox="0 0 560 320" style="width:100%;height:100%;max-height:320px;">
+        <defs>
+          <linearGradient id="jg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ca8a04" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#ca8a04" stop-opacity="0.04"/>
+          </linearGradient>
+        </defs>
+        <path d="M40 265 Q120 272 200 228 Q280 182 350 198 Q420 215 480 148 Q510 112 530 88" fill="none" stroke="#ca8a04" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M40 265 Q120 272 200 228 Q280 182 350 198 Q420 215 480 148 Q510 112 530 88 L530 290 L40 290 Z" fill="url(#jg)"/>
+        <circle cx="110" cy="270" r="11" fill="#ca8a04" opacity="0.2"/><circle cx="110" cy="270" r="7" fill="#ca8a04"/>
+        <rect x="35" y="283" width="155" height="36" rx="8" fill="white" stroke="#e7e5e4"/>
+        <text x="112" y="306" text-anchor="middle" font-family="GenJyuuGothicP" font-size="13" fill="#292524" font-weight="600">通勤語音指令</text>
+        <circle cx="310" cy="196" r="11" fill="#ca8a04" opacity="0.2"/><circle cx="310" cy="196" r="7" fill="#ca8a04"/>
+        <rect x="235" y="210" width="155" height="36" rx="8" fill="white" stroke="#e7e5e4"/>
+        <text x="312" y="233" text-anchor="middle" font-family="GenJyuuGothicP" font-size="13" fill="#292524" font-weight="600">龍蝦搜尋整理</text>
+        <circle cx="490" cy="138" r="14" fill="#ca8a04" opacity="0.2"/><circle cx="490" cy="138" r="9" fill="#ca8a04"/>
+        <rect x="420" y="152" width="130" height="36" rx="8" fill="#fffbeb" stroke="#fde68a" stroke-width="1.5"/>
+        <text x="485" y="175" text-anchor="middle" font-family="GenJyuuGothicP" font-size="13" fill="#ca8a04" font-weight="700">完成的文章！</text>
+        <text x="40" y="35" font-family="GenJyuuGothicP" font-size="13" fill="#a8a29e">早上 7:00</text>
+        <text x="250" y="35" font-family="GenJyuuGothicP" font-size="13" fill="#a8a29e">中午</text>
+        <text x="430" y="35" font-family="GenJyuuGothicP" font-size="13" fill="#a8a29e">下班 18:00</text>
+        <line x1="40" y1="42" x2="40" y2="265" stroke="#e7e5e4" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="270" y1="42" x2="270" y2="265" stroke="#e7e5e4" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="460" y1="42" x2="460" y2="265" stroke="#e7e5e4" stroke-width="1" stroke-dasharray="4,4"/>
+      </svg>
+    </div>
+    <div style="flex:0 0 32%;display:flex;flex-direction:column;gap:1rem;">
+      <div class="card-gold">
+        <p style="font-weight:700;font-size:1.2rem;color:#292524;margin-bottom:0.75rem;">實際成果</p>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;">
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <span style="font-size:2rem;font-weight:900;color:#ca8a04;font-family:JetBrains Mono;">18</span>
+            <p style="font-size:1.1rem;color:#292524;">篇文章<br><span style="font-size:0.95rem;color:#78716c;">自動撰寫完成</span></p>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <span style="font-size:2rem;font-weight:900;color:#ca8a04;font-family:JetBrains Mono;">RSS</span>
+            <p style="font-size:1.1rem;color:#292524;">自動摘要<br><span style="font-size:0.95rem;color:#78716c;">每天早上 Inbox</span></p>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <span style="font-size:1.5rem;font-weight:900;color:#ca8a04;font-family:JetBrains Mono;">24h</span>
+            <p style="font-size:1.1rem;color:#292524;">市場追蹤<br><span style="font-size:0.95rem;color:#78716c;">股票/新聞/趨勢</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" :class="{active:current===9,prev:prev===9}">
+  <div style="margin-bottom:1.5rem;"><span class="tag">Flowchart</span><h2 style="margin-top:0.6rem;">案例 3 — <span class="gold">工作自動化</span></h2></div>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+    <svg viewBox="0 0 880 320" style="width:100%;max-width:90vw;max-height:55vh;height:auto;">
+      <defs><marker id="aFlo" markerWidth="9" markerHeight="9" refX="4.5" refY="4.5" orient="auto"><polygon points="0,0 9,4.5 0,9" fill="#ca8a04"/></marker></defs>
+      <rect x="20" y="118" width="108" height="56" rx="12" fill="white" stroke="#e7e5e4" stroke-width="2"/>
+      <text x="74" y="143" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" font-weight="700" fill="#292524">需求</text>
+      <text x="74" y="162" text-anchor="middle" font-family="GenJyuuGothicP" font-size="12" fill="#78716c">功能描述</text>
+      <line x1="128" y1="146" x2="155" y2="146" stroke="#ca8a04" stroke-width="2" marker-end="url(#aFlo)"/>
+      <rect x="158" y="118" width="124" height="56" rx="12" fill="white" stroke="#e7e5e4" stroke-width="2"/>
+      <text x="220" y="143" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" font-weight="700" fill="#292524">Linear</text>
+      <text x="220" y="162" text-anchor="middle" font-family="GenJyuuGothicP" font-size="12" fill="#78716c">自動建 Issue</text>
+      <line x1="282" y1="146" x2="308" y2="146" stroke="#ca8a04" stroke-width="2" marker-end="url(#aFlo)"/>
+      <rect x="312" y="118" width="124" height="56" rx="12" fill="white" stroke="#e7e5e4" stroke-width="2"/>
+      <text x="374" y="143" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" font-weight="700" fill="#292524">GitHub PR</text>
+      <text x="374" y="162" text-anchor="middle" font-family="GenJyuuGothicP" font-size="12" fill="#78716c">龍蝦寫程式</text>
+      <line x1="436" y1="146" x2="462" y2="146" stroke="#ca8a04" stroke-width="2" marker-end="url(#aFlo)"/>
+      <rect x="466" y="118" width="124" height="56" rx="12" fill="white" stroke="#e7e5e4" stroke-width="2"/>
+      <text x="528" y="143" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" font-weight="700" fill="#292524">自動測試</text>
+      <text x="528" y="162" text-anchor="middle" font-family="GenJyuuGothicP" font-size="12" fill="#78716c">CI/CD 跑起來</text>
+      <line x1="590" y1="146" x2="616" y2="146" stroke="#ca8a04" stroke-width="2" marker-end="url(#aFlo)"/>
+      <rect x="620" y="118" width="108" height="56" rx="12" fill="white" stroke="#e7e5e4" stroke-width="2"/>
+      <text x="674" y="143" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" font-weight="700" fill="#292524">部署</text>
+      <text x="674" y="162" text-anchor="middle" font-family="GenJyuuGothicP" font-size="12" fill="#78716c">Auto merge</text>
+      <line x1="728" y1="146" x2="754" y2="146" stroke="#ca8a04" stroke-width="2" marker-end="url(#aFlo)"/>
+      <rect x="758" y="118" width="108" height="56" rx="12" fill="#fffbeb" stroke="#ca8a04" stroke-width="2.5"/>
+      <text x="812" y="143" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" font-weight="700" fill="#ca8a04">Telegram</text>
+      <text x="812" y="162" text-anchor="middle" font-family="GenJyuuGothicP" font-size="12" fill="#b45309">完成通知你</text>
+      <text x="74" y="80" text-anchor="middle" font-family="GenJyuuGothicP" font-size="12" fill="#a8a29e">你</text>
+      <text x="220" y="80" text-anchor="middle" font-family="GenJyuuGothicP" font-size="12" fill="#a8a29e">龍蝦</text>
+      <text x="374" y="80" text-anchor="middle" font-family="GenJyuuGothicP" font-size="12" fill="#a8a29e">龍蝦</text>
+      <text x="528" y="80" text-anchor="middle" font-family="GenJyuuGothicP" font-size="12" fill="#a8a29e">自動</text>
+      <text x="674" y="80" text-anchor="middle" font-family="GenJyuuGothicP" font-size="12" fill="#a8a29e">自動</text>
+      <text x="812" y="80" text-anchor="middle" font-family="GenJyuuGothicP" font-size="12" fill="#ca8a04">你</text>
+      <line x1="74" y1="88" x2="74" y2="116" stroke="#e7e5e4" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="220" y1="88" x2="220" y2="116" stroke="#e7e5e4" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="374" y1="88" x2="374" y2="116" stroke="#e7e5e4" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="528" y1="88" x2="528" y2="116" stroke="#e7e5e4" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="674" y1="88" x2="674" y2="116" stroke="#e7e5e4" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="812" y1="88" x2="812" y2="116" stroke="#ca8a04" stroke-width="1" stroke-dasharray="4,4" opacity="0.5"/>
+      <text x="440" y="250" text-anchor="middle" font-family="GenJyuuGothicP" font-size="18" font-weight="700" fill="#78716c">你只需要描述需求 — 龍蝦搞定後面所有事</text>
+    </svg>
+  </div>
+</div>
+
+<div class="slide" :class="{active:current===10,prev:prev===10}">
+  <div style="margin-bottom:1.5rem;"><span class="tag">Card Grid</span><h2 style="margin-top:0.6rem;">案例 4 — <span class="gold">Side Project 工廠</span></h2></div>
+  <div style="flex:1;display:flex;flex-direction:column;gap:1.5rem;max-width:90vw;width:100%;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;flex:1;">
+      <div class="card" style="display:flex;flex-direction:column;gap:1rem;border-top:4px solid #ca8a04;">
+        <div>
+          <p style="font-family:JetBrains Mono;font-size:0.9rem;color:#ca8a04;margin-bottom:0.5rem;">bg-removal.3mi.tw</p>
+          <p style="font-size:1.3rem;font-weight:700;color:#292524;">AI 去背工具</p>
+        </div>
+        <p style="font-size:1.1rem;color:#78716c;line-height:1.6;">一鍵上傳圖片，AI 自動去除背景。完全免費，無需帳號。</p>
+        <div style="margin-top:auto;">
+          <svg viewBox="0 0 200 80" style="width:100%;"><rect x="10" y="10" width="80" height="60" rx="8" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1.5"/><rect x="110" y="10" width="80" height="60" rx="8" fill="#ca8a04" opacity="0.1" stroke="#ca8a04" stroke-width="1.5"/><path d="M100 40 L106 40" stroke="#ca8a04" stroke-width="2" stroke-dasharray="4,2"/><circle cx="50" cy="40" r="12" fill="#bae6fd" opacity="0.6"/><rect x="20" y="28" width="60" height="24" rx="4" fill="#93c5fd" opacity="0.4"/></svg>
+        </div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:1rem;border-top:4px solid #ca8a04;">
+        <div>
+          <p style="font-family:JetBrains Mono;font-size:0.9rem;color:#ca8a04;margin-bottom:0.5rem;">retrolyze.3mi.tw</p>
+          <p style="font-size:1.3rem;font-weight:700;color:#292524;">Retro 分析工具</p>
+        </div>
+        <p style="font-size:1.1rem;color:#78716c;line-height:1.6;">團隊回顧會議 AI 助手，自動整理問題、行動項目與洞察。</p>
+        <div style="margin-top:auto;">
+          <svg viewBox="0 0 200 80" style="width:100%;"><circle cx="60" cy="40" r="28" fill="#fef9c3" stroke="#fde68a" stroke-width="1.5"/><circle cx="140" cy="40" r="28" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/><path d="M88 30 Q100 40 112 30 M88 50 Q100 40 112 50" fill="none" stroke="#ca8a04" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:1rem;border-top:4px solid #ca8a04;">
+        <div>
+          <p style="font-family:JetBrains Mono;font-size:0.9rem;color:#ca8a04;margin-bottom:0.5rem;">mbti.3mi.tw</p>
+          <p style="font-size:1.3rem;font-weight:700;color:#292524;">MBTI 分析</p>
+        </div>
+        <p style="font-size:1.1rem;color:#78716c;line-height:1.6;">深度 MBTI 人格分析，AI 解讀你的類型優勢與發展建議。</p>
+        <div style="margin-top:auto;">
+          <svg viewBox="0 0 200 80" style="width:100%;"><rect x="10" y="10" width="80" height="28" rx="6" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1.5"/><rect x="10" y="45" width="80" height="28" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/><rect x="110" y="10" width="80" height="28" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/><rect x="110" y="45" width="80" height="28" rx="6" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/><text x="50" y="29" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#9333ea">I</text><text x="50" y="64" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#3b82f6">N</text><text x="150" y="29" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#16a34a">T</text><text x="150" y="64" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#ea580c">J</text></svg>
+        </div>
+      </div>
+    </div>
+    <div class="card-gold" style="text-align:center;">
+      <p style="font-size:1.15rem;color:#292524;">龍蝦負責 <strong>寫 code、測試、部署、監控</strong>，我只負責 <strong>想 idea</strong></p>
+    </div>
+  </div>
+</div>
+
+<div class="slide" :class="{active:current===11,prev:prev===11}">
+  <div style="margin-bottom:1.5rem;"><span class="tag">Balancing Tradeoffs</span><h2 style="margin-top:0.6rem;">怎麼<span class="gold">養得起</span>一隻龍蝦？</h2></div>
+  <div style="flex:1;display:flex;align-items:stretch;gap:2rem;max-width:90vw;width:100%;">
+    <div style="flex:1;display:flex;flex-direction:column;gap:1.5rem;">
+      <div style="flex:1;">
+        <svg viewBox="0 0 420 240" style="width:100%;height:100%;max-height:240px;">
+          <line x1="210" y1="30" x2="210" y2="80" stroke="#292524" stroke-width="4" stroke-linecap="round"/>
+          <line x1="80" y1="80" x2="340" y2="80" stroke="#292524" stroke-width="3.5"/>
+          <circle cx="210" cy="80" r="8" fill="#292524"/>
+          <line x1="80" y1="80" x2="60" y2="140" stroke="#ef4444" stroke-width="3"/>
+          <line x1="340" y1="80" x2="360" y2="140" stroke="#16a34a" stroke-width="3"/>
+          <rect x="10" y="140" width="100" height="60" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="2"/>
+          <text x="60" y="165" text-anchor="middle" font-family="GenJyuuGothicP" font-size="13" font-weight="700" fill="#dc2626">On-demand</text>
+          <text x="60" y="184" text-anchor="middle" font-family="GenJyuuGothicP" font-size="11" fill="#78716c">貴！帳單</text>
+          <text x="60" y="198" text-anchor="middle" font-family="GenJyuuGothicP" font-size="11" fill="#78716c">嚇死人</text>
+          <rect x="310" y="140" width="100" height="60" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
+          <text x="360" y="165" text-anchor="middle" font-family="GenJyuuGothicP" font-size="13" font-weight="700" fill="#16a34a">訂閱制</text>
+          <text x="360" y="184" text-anchor="middle" font-family="GenJyuuGothicP" font-size="11" fill="#78716c">$110/月</text>
+          <text x="360" y="198" text-anchor="middle" font-family="GenJyuuGothicP" font-size="11" fill="#16a34a">省 85%</text>
+        </svg>
+      </div>
+      <div class="card-gold">
+        <p style="font-weight:700;font-size:1.1rem;color:#292524;margin-bottom:0.75rem;">訂閱制怎麼算這麼便宜？</p>
+        <p style="font-size:1.1rem;color:#78716c;line-height:1.7;">Claude / GPT API 是 <strong style="color:#dc2626;">按用量計費</strong>，每次對話都在燒錢。<br>訂閱制 <strong style="color:#16a34a;">$110/月</strong> 無限用，超划算！</p>
+      </div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:1rem;">
+      <h3 style="font-size:1.4rem;font-weight:700;color:#292524;">家臣團分工表</h3>
+      <div style="flex:1;overflow:auto;">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr style="background:#fffbeb;border-bottom:2px solid #fde68a;">
+            <th style="padding:0.75rem;text-align:left;font-size:1.05rem;color:#292524;">角色</th>
+            <th style="padding:0.75rem;text-align:left;font-size:1.05rem;color:#292524;">負責</th>
+            <th style="padding:0.75rem;text-align:left;font-size:1.05rem;color:#ca8a04;">費用</th>
+          </tr></thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #f5f5f4;">
+              <td style="padding:0.75rem;font-size:1.05rem;font-weight:600;color:#292524;">Claude Sonnet</td>
+              <td style="padding:0.75rem;font-size:1rem;color:#78716c;">日常對話、任務執行</td>
+              <td style="padding:0.75rem;font-size:1rem;color:#16a34a;">$20/月</td>
+            </tr>
+            <tr style="border-bottom:1px solid #f5f5f4;background:#fafaf9;">
+              <td style="padding:0.75rem;font-size:1.05rem;font-weight:600;color:#292524;">Claude Opus</td>
+              <td style="padding:0.75rem;font-size:1rem;color:#78716c;">複雜思考、難題</td>
+              <td style="padding:0.75rem;font-size:1rem;color:#16a34a;">$20/月</td>
+            </tr>
+            <tr style="border-bottom:1px solid #f5f5f4;">
+              <td style="padding:0.75rem;font-size:1.05rem;font-weight:600;color:#292524;">MiniMax M1</td>
+              <td style="padding:0.75rem;font-size:1rem;color:#78716c;">圖片生成、多媒體</td>
+              <td style="padding:0.75rem;font-size:1rem;color:#16a34a;">$30/月</td>
+            </tr>
+            <tr>
+              <td style="padding:0.75rem;font-size:1.05rem;font-weight:600;color:#ca8a04;">Codex / Gemini</td>
+              <td style="padding:0.75rem;font-size:1rem;color:#78716c;">程式碼、搜尋</td>
+              <td style="padding:0.75rem;font-size:1rem;color:#16a34a;">$40/月</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" :class="{active:current===12,prev:prev===12}">
+  <div style="margin-bottom:1.5rem;"><span class="tag">Pyramid</span><h2 style="margin-top:0.6rem;">資安<span class="gold">三鐵律</span></h2></div>
+  <div style="flex:1;display:flex;align-items:center;gap:3rem;max-width:90vw;width:100%;">
+    <div style="flex:1;display:flex;justify-content:center;align-items:center;">
+      <svg viewBox="0 0 440 380" style="width:100%;max-width:380px;max-height:55vh;height:auto;">
+        <polygon points="220,30 380,340 60,340" fill="#faf8f5" stroke="#ca8a04" stroke-width="2.5"/>
+        <line x1="140" y1="220" x2="300" y2="220" stroke="#ca8a04" stroke-width="2"/>
+        <line x1="100" y1="310" x2="340" y2="310" stroke="#ca8a04" stroke-width="2"/>
+        <polygon points="220,30 300,220 140,220" fill="#ca8a04" opacity="0.15"/>
+        <polygon points="140,220 300,220 340,310 100,310" fill="#ca8a04" opacity="0.09"/>
+        <polygon points="100,310 340,310 380,340 60,340" fill="#ca8a04" opacity="0.05"/>
+        <text x="220" y="140" text-anchor="middle" font-family="GenJyuuGothicP" font-size="14" font-weight="700" fill="#ca8a04">先 Validate</text>
+        <text x="220" y="158" text-anchor="middle" font-family="GenJyuuGothicP" font-size="12" fill="#b45309">再 Restart</text>
+        <text x="220" y="230" text-anchor="middle" font-family="GenJyuuGothicP" font-size="15" font-weight="700" fill="#292524">最小權限</text>
+        <text x="220" y="248" text-anchor="middle" font-family="GenJyuuGothicP" font-size="13" fill="#78716c">只給需要的存取</text>
+        <text x="220" y="320" text-anchor="middle" font-family="GenJyuuGothicP" font-size="17" font-weight="700" fill="#292524">帳號隔離</text>
+        <text x="220" y="340" text-anchor="middle" font-family="GenJyuuGothicP" font-size="13" fill="#78716c">基礎！不能省</text>
+        <text x="400" y="135" font-family="GenJyuuGothicP" font-size="12" fill="#a8a29e">最進階</text>
+        <text x="400" y="240" font-family="GenJyuuGothicP" font-size="12" fill="#a8a29e">進階</text>
+        <text x="400" y="330" font-family="GenJyuuGothicP" font-size="12" fill="#a8a29e">基礎</text>
+        <line x1="382" y1="140" x2="295" y2="170" stroke="#e7e5e4" stroke-width="1"/>
+        <line x1="390" y1="240" x2="302" y2="240" stroke="#e7e5e4" stroke-width="1"/>
+        <line x1="385" y1="330" x2="342" y2="330" stroke="#e7e5e4" stroke-width="1"/>
+      </svg>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:1.25rem;">
+      <div class="card" style="border-left:4px solid #ca8a04;">
+        <p style="font-weight:700;font-size:1.25rem;color:#ca8a04;margin-bottom:0.5rem;">頂層：先 Validate 再 Restart</p>
+        <p style="font-size:1.1rem;color:#78716c;line-height:1.7;">設定改好前，先測試無誤再重啟服務。避免把自己鎖在外面。</p>
+      </div>
+      <div class="card" style="border-left:4px solid #d97706;">
+        <p style="font-weight:700;font-size:1.25rem;color:#292524;margin-bottom:0.5rem;">中層：最小權限原則</p>
+        <p style="font-size:1.1rem;color:#78716c;line-height:1.7;">龍蝦只需要存取它負責的資源，不給超出範圍的權限。</p>
+      </div>
+      <div class="card" style="border-left:4px solid #e7e5e4;">
+        <p style="font-weight:700;font-size:1.25rem;color:#292524;margin-bottom:0.5rem;">底層：帳號隔離</p>
+        <p style="font-size:1.1rem;color:#78716c;line-height:1.7;">龍蝦用的帳號，與你的個人帳號完全分開。這是基本中的基本。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" :class="{active:current===13,prev:prev===13}">
+  <div style="margin-bottom:1.5rem;"><span class="tag">Mountain Climbing</span><h2 style="margin-top:0.6rem;"><span class="gold">踩坑避雷</span> 與帶走 3 件事</h2></div>
+  <div style="flex:1;display:flex;align-items:stretch;gap:2.5rem;max-width:90vw;width:100%;">
+    <div style="flex:1.2;">
+      <svg viewBox="0 0 500 320" style="width:100%;height:100%;max-height:320px;">
+        <path d="M30 280 Q80 260 120 220 Q150 195 180 160 Q210 125 250 100 Q290 75 330 60 Q370 45 460 30" fill="none" stroke="#ca8a04" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="75" cy="255" r="14" fill="#fef2f2" stroke="#f87171" stroke-width="2"/>
+        <text x="75" y="260" text-anchor="middle" font-family="GenJyuuGothicP" font-size="11" font-weight="700" fill="#dc2626">坑1</text>
+        <text x="75" y="238" text-anchor="middle" font-family="GenJyuuGothicP" font-size="11" fill="#78716c">Token 過期</text>
+        <circle cx="145" cy="198" r="14" fill="#fef2f2" stroke="#f87171" stroke-width="2"/>
+        <text x="145" y="203" text-anchor="middle" font-family="GenJyuuGothicP" font-size="11" font-weight="700" fill="#dc2626">坑2</text>
+        <text x="145" y="186" text-anchor="middle" font-family="GenJyuuGothicP" font-size="11" fill="#78716c">權限太大</text>
+        <circle cx="210" cy="150" r="14" fill="#fef2f2" stroke="#f87171" stroke-width="2"/>
+        <text x="210" y="155" text-anchor="middle" font-family="GenJyuuGothicP" font-size="11" font-weight="700" fill="#dc2626">坑3</text>
+        <text x="210" y="138" text-anchor="middle" font-family="GenJyuuGothicP" font-size="11" fill="#78716c">記憶太多</text>
+        <circle cx="285" cy="102" r="14" fill="#fef2f2" stroke="#f87171" stroke-width="2"/>
+        <text x="285" y="107" text-anchor="middle" font-family="GenJyuuGothicP" font-size="11" font-weight="700" fill="#dc2626">坑4</text>
+        <text x="285" y="90" text-anchor="middle" font-family="GenJyuuGothicP" font-size="11" fill="#78716c">Skill 太多</text>
+        <circle cx="365" cy="60" r="14" fill="#fef2f2" stroke="#f87171" stroke-width="2"/>
+        <text x="365" y="65" text-anchor="middle" font-family="GenJyuuGothicP" font-size="11" font-weight="700" fill="#dc2626">坑5</text>
+        <text x="365" y="48" text-anchor="middle" font-family="GenJyuuGothicP" font-size="11" fill="#78716c">不測試直接上</text>
+        <circle cx="450" cy="32" r="18" fill="#fffbeb" stroke="#ca8a04" stroke-width="2.5"/>
+        <text x="450" y="27" text-anchor="middle" font-family="GenJyuuGothicP" font-size="11" font-weight="700" fill="#ca8a04">山頂</text>
+        <text x="450" y="42" text-anchor="middle" font-family="GenJyuuGothicP" font-size="10" fill="#b45309">YOU!</text>
+      </svg>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:1rem;">
+      <h3 style="font-size:1.3rem;font-weight:700;color:#292524;">帶走 3 件事</h3>
+      <div class="card" style="flex:1;border-left:4px solid #ca8a04;">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+          <span style="font-size:2rem;font-weight:900;color:#ca8a04;font-family:JetBrains Mono;">1</span>
+          <p style="font-weight:700;font-size:1.2rem;color:#292524;">今天就裝起來</p>
+        </div>
+        <p style="font-size:1.05rem;color:#78716c;">不用等準備好，先跑起來再說</p>
+      </div>
+      <div class="card" style="flex:1;border-left:4px solid #ca8a04;">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+          <span style="font-size:2rem;font-weight:900;color:#ca8a04;font-family:JetBrains Mono;">2</span>
+          <p style="font-weight:700;font-size:1.2rem;color:#292524;">先給一件小任務</p>
+        </div>
+        <p style="font-size:1.05rem;color:#78716c;">從每天都要做的重複工作開始</p>
+      </div>
+      <div class="card" style="flex:1;border-left:4px solid #ca8a04;">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+          <span style="font-size:2rem;font-weight:900;color:#ca8a04;font-family:JetBrains Mono;">3</span>
+          <p style="font-weight:700;font-size:1.2rem;color:#292524;">定期整理記憶</p>
+        </div>
+        <p style="font-size:1.05rem;color:#78716c;">龍蝦記憶越乾淨，回應越準確</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" :class="{active:current===14,prev:prev===14}">
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:2.5rem;">
+    <div>
+      <h1 style="font-size:clamp(3rem,6vw,5rem);font-weight:900;color:#292524;line-height:1.1;">謝謝大家</h1>
+      <p style="font-size:clamp(1.3rem,2.5vw,2rem);color:#78716c;margin-top:0.75rem;font-weight:300;">Q &amp; A 時間</p>
+    </div>
+    <div style="display:flex;gap:2.5rem;flex-wrap:wrap;justify-content:center;">
+      <div class="card" style="text-align:left;min-width:240px;">
+        <p style="font-size:0.9rem;color:#a8a29e;margin-bottom:0.5rem;font-family:JetBrains Mono;">Telegram</p>
+        <p style="font-size:1.5rem;font-weight:700;color:#ca8a04;font-family:JetBrains Mono;">@sammylin</p>
+      </div>
+      <div class="card" style="text-align:left;min-width:240px;">
+        <p style="font-size:0.9rem;color:#a8a29e;margin-bottom:0.5rem;font-family:JetBrains Mono;">Slides</p>
+        <p style="font-size:1.5rem;font-weight:700;color:#ca8a04;font-family:JetBrains Mono;">slides.3mi.tw</p>
+      </div>
+    </div>
+    <div style="margin-top:1rem;">
+      <svg viewBox="0 0 400 80" style="width:min(400px,80vw);height:auto;">
+        <text x="200" y="35" text-anchor="middle" font-family="GenJyuuGothicP" font-size="20" fill="#78716c">裝好你的龍蝦，讓它幫你工作</text>
+        <line x1="60" y1="50" x2="340" y2="50" stroke="#ca8a04" stroke-width="1.5" opacity="0.4"/>
+        <text x="200" y="72" text-anchor="middle" font-family="JetBrains Mono" font-size="14" fill="#ca8a04">npm install -g openclaw</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESG 101 — Delta ESG Consulting Tech</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=LINESeedTW:wght@400;700;900&family=Fira+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.3mi.tw/alpinejs@3.14.8.min.js" defer></script>
+  <style>
+    * { font-family: 'LINESeedTW', 'Noto Sans TC', sans-serif; }
+    .font-mono, .mono { font-family: 'Fira Mono', monospace; }
+    body { background: #faf8f5; overflow: hidden; }
+    .slide { display: none; flex-direction: column; justify-content: center; min-height: 100vh; padding: 2.5rem 4rem; box-sizing: border-box; }
+    .slide.active { display: flex; }
+    .gold-line { height: 4px; background: linear-gradient(90deg, #ca8a04 0%, #e8d5a0 100%); border-radius: 2px; margin: 0.75rem 0 1.5rem; }
+    .card { background: #f5f0e8; border-radius: 0.75rem; padding: 1.25rem; }
+    .card-border-gold { background: #f5f0e8; border: 2px solid #ca8a04; border-radius: 0.75rem; padding: 1.25rem; }
+    .card-gold-quote { background: #292524; border-radius: 0.75rem; padding: 1rem 1.5rem; }
+    .progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: #ca8a04; transition: width 0.3s; z-index: 50; }
+    .fade-in { animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .slide.active > * { animation: fadeIn 0.4s ease-out; }
+    @media print { .slide { display: flex !important; page-break-after: always; } }
+    @page { size: landscape; }
+  </style>
+</head>
+<body x-data="{ current: 0, total: 10, progress: 0 }" x-init="
+  $el.style.display = 'block';
+  $watch('current', v => { if(v >= 0) updateProgress(); });
+  document.addEventListener('keydown', handleKey);
+  let startX = 0;
+  $el.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+  $el.addEventListener('touchend', e => { const diff = e.changedTouches[0].clientX - startX; if(Math.abs(diff) > 50) diff > 0 ? prev() : next(); });
+  function handleKey(e) { switch(e.key) { case 'ArrowRight': case 'ArrowDown': case ' ': e.preventDefault(); next(); break; case 'ArrowLeft': case 'ArrowUp': e.preventDefault(); prev(); break; case 'Home': e.preventDefault(); goTo(0); break; case 'End': e.preventDefault(); goTo(total - 1); break; case 'f': case 'F': toggleFS(); break; case 'p': case 'P': window.print(); break; } }
+  function next() { if(current < total - 1) { current++; } }
+  function prev() { if(current > 0) { current--; } }
+  function goTo(i) { current = Math.max(0, Math.min(i, total - 1)); }
+  function updateProgress() { progress = ((current + 1) / total) * 100; }
+  function toggleFS() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+" @goto.window="goTo($event.detail)">
+
+  <div class="progress-bar" :style="'width: ' + progress + '%'"></div>
+
+  <!-- 第 1 頁｜封面 -->
+  <section class="slide active text-center" :class="{ 'active': current === 0 }">
+    <div class="max-w-6xl mx-auto">
+      <p class="font-mono text-sm text-[#78716c] mb-4">Delta ESG Consulting Tech</p>
+      <h1 class="text-8xl font-black text-[#292524] mb-4" style="font-size: 7rem; line-height: 1.1;">ESG 101</h1>
+      <div class="gold-line mx-auto" style="max-width: 400px;"></div>
+      <p class="text-2xl text-[#78716c] mb-8">給還沒搞懂的人</p>
+      <p class="font-mono text-lg text-[#ca8a04]">2026.04.01</p>
+    </div>
+  </section>
+
+  <!-- 第 2 頁｜破題 -->
+  <section class="slide" :class="{ 'active': current === 1 }">
+    <div class="max-w-6xl mx-auto text-center">
+      <h2 class="text-5xl font-black text-[#292524] mb-8" style="font-size: 3.5rem; line-height: 1.2;">
+        以前公司只問<br>「賺多少錢」<br>
+        現在還要問：<br>
+        <span class="text-[#ca8a04]">「對世界好嗎？」</span>
+      </h2>
+      <div class="gold-line mx-auto" style="max-width: 300px;"></div>
+      <p class="text-xl text-[#78716c]">ESG 不是口號，是新一代的遊戲規則。</p>
+    </div>
+  </section>
+
+  <!-- 第 3 頁｜ESG 是什麼 -->
+  <section class="slide" :class="{ 'active': current === 2 }">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">ESG 是什麼？</h2>
+      <div class="gold-line"></div>
+      <div class="grid grid-cols-3 gap-6 mb-8">
+        <div class="card-border-gold text-center py-8">
+          <p class="text-5xl mb-4">🌱</p>
+          <p class="text-2xl font-black text-[#292524] mb-2">E</p>
+          <p class="text-lg font-bold text-[#ca8a04] mb-3">Environmental</p>
+          <p class="text-sm text-[#78716c]">環境</p>
+          <p class="text-sm text-[#78716c] mt-2">環保、減碳、資源循環</p>
+        </div>
+        <div class="card-border-gold text-center py-8">
+          <p class="text-5xl mb-4">👥</p>
+          <p class="text-2xl font-black text-[#292524] mb-2">S</p>
+          <p class="text-lg font-bold text-[#ca8a04] mb-3">Social</p>
+          <p class="text-sm text-[#78716c]">社會</p>
+          <p class="text-sm text-[#78716c] mt-2">員工、供應鏈、社區、人權</p>
+        </div>
+        <div class="card-border-gold text-center py-8">
+          <p class="text-5xl mb-4">⚖️</p>
+          <p class="text-2xl font-black text-[#292524] mb-2">G</p>
+          <p class="text-lg font-bold text-[#ca8a04] mb-3">Governance</p>
+          <p class="text-sm text-[#78716c]">治理</p>
+          <p class="text-sm text-[#78716c] mt-2">透明度、倫理、董事多元</p>
+        </div>
+      </div>
+      <div class="card-gold-quote text-center">
+        <p class="text-xl font-black text-[#faf8f5]">「CSR 升級版，但更有標準。」</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 第 4 頁｜E = 環境 -->
+  <section class="slide" :class="{ 'active': current === 3 }">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">E = 環境（Environmental）</h2>
+      <div class="gold-line"></div>
+      <p class="text-2xl font-black text-[#292524] mb-6">🌍 地球的帳本</p>
+      <div class="grid grid-cols-2 gap-4 mb-8">
+        <div class="card-border-gold py-5 px-6">
+          <p class="text-lg font-black text-[#292524] mb-3">🌱 碳排放與減碳目標</p>
+          <p class="text-sm text-[#78716c]">範疇 1/2/3 碳排放計算、Science Based Targets、淨零路徑</p>
+        </div>
+        <div class="card-border-gold py-5 px-6">
+          <p class="text-lg font-black text-[#292524] mb-3">🔋 能源效率與再生能源</p>
+          <p class="text-sm text-[#78716c]">RE100、綠電採購、能源管理系統（ISO 50001）</p>
+        </div>
+        <div class="card-border-gold py-5 px-6">
+          <p class="text-lg font-black text-[#292524] mb-3">🗑️ 廢棄物管理</p>
+          <p class="text-sm text-[#78716c]">循環經濟、回收率目標、禁塑政策、有害廢棄物處理</p>
+        </div>
+        <div class="card-border-gold py-5 px-6">
+          <p class="text-lg font-black text-[#292524] mb-3">💧 水資源</p>
+          <p class="text-sm text-[#78716c]">用水強度、風險流域分析、廢水處理與回收</p>
+        </div>
+      </div>
+      <div class="card-gold-quote text-center">
+        <p class="text-xl font-black text-[#faf8f5]">「碳中和是下一代的 KPI。」</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 第 5 頁｜S = 社會 -->
+  <section class="slide" :class="{ 'active': current === 4 }">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">S = 社會（Social）</h2>
+      <div class="gold-line"></div>
+      <p class="text-2xl font-black text-[#292524] mb-6">👥 人的帳本</p>
+      <div class="grid grid-cols-2 gap-4 mb-8">
+        <div class="card-border-gold py-5 px-6">
+          <p class="text-lg font-black text-[#292524] mb-3">👷 員工健康與安全</p>
+          <p class="text-sm text-[#78716c]">職業安全衛生管理系統（ISO 45001）、工傷率、員工健康福利</p>
+        </div>
+        <div class="card-border-gold py-5 px-6">
+          <p class="text-lg font-black text-[#292524] mb-3">🤝 供應鏈人權</p>
+          <p class="text-sm text-[#78716c]">童工、强迫勞動盡職調查、RBA 行為準則、衝突礦產</p>
+        </div>
+        <div class="card-border-gold py-5 px-6">
+          <p class="text-lg font-black text-[#292524] mb-3">📚 人才培育 / DEI</p>
+          <p class="text-sm text-[#78716c]">Diversity（多元）、Equity（公平）、Inclusion（共融）、培訓時數</p>
+        </div>
+        <div class="card-border-gold py-5 px-6">
+          <p class="text-lg font-black text-[#292524] mb-3">🏘️ 社區參與</p>
+          <p class="text-sm text-[#78716c]">公益活動、志工時數、社會投資報酬率（SROI）</p>
+        </div>
+      </div>
+      <div class="card-gold-quote text-center">
+        <p class="text-xl font-black text-[#faf8f5]">「對員工好的公司，投資人更愛。」</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 第 6 頁｜G = 治理 -->
+  <section class="slide" :class="{ 'active': current === 5 }">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">G = 治理（Governance）</h2>
+      <div class="gold-line"></div>
+      <p class="text-2xl font-black text-[#292524] mb-6">⚖️ 公司的帳本</p>
+      <div class="grid grid-cols-2 gap-4 mb-8">
+        <div class="card-border-gold py-5 px-6">
+          <p class="text-lg font-black text-[#292524] mb-3">📊 資訊透明度</p>
+          <p class="text-sm text-[#78716c]">財務報告、風險揭露、重大事件即時申報</p>
+        </div>
+        <div class="card-border-gold py-5 px-6">
+          <p class="text-lg font-black text-[#292524] mb-3">⚖️ 董事多元與獨立性</p>
+          <p class="text-sm text-[#78716c]">女性董事比例、獨立董事席次、提名委員會</p>
+        </div>
+        <div class="card-border-gold py-5 px-6">
+          <p class="text-lg font-black text-[#292524] mb-3">🛡️ 貪腐防治</p>
+          <p class="text-sm text-[#78716c]">反賄賂政策、吹哨人制度、倫理委員會</p>
+        </div>
+        <div class="card-border-gold py-5 px-6">
+          <p class="text-lg font-black text-[#292524] mb-3">🔍 稽核與內控</p>
+          <p class="text-sm text-[#78716c]">內部稽核獨立性、內控制度有效性、風險管理機制</p>
+        </div>
+      </div>
+      <div class="card-gold-quote text-center">
+        <p class="text-xl font-black text-[#faf8f5]">「治理做得好，股價也會說話。」</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 第 7 頁｜為什麼現在在瘋 ESG -->
+  <section class="slide" :class="{ 'active': current === 6 }">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">為什麼現在在瘋 ESG？</h2>
+      <div class="gold-line"></div>
+      <div class="grid grid-cols-3 gap-6 mb-8">
+        <div class="card-border-gold text-center py-8">
+          <p class="text-5xl mb-4">📋</p>
+          <p class="text-xl font-black text-[#292524] mb-3">法規壓力</p>
+          <p class="text-sm text-[#78716c]">歐盟 CSRD / CBAM<br>美國 SEC 氣候揭露<br>台灣金管會要求</p>
+        </div>
+        <div class="card-border-gold text-center py-8">
+          <p class="text-5xl mb-4">💰</p>
+          <p class="text-xl font-black text-[#292524] mb-3">資金流向</p>
+          <p class="text-sm text-[#78716c]">ESG 基金規模破兆<br>投資人用 ESG 篩選股票<br>ESG 績效好 = 借貸利率更低</p>
+        </div>
+        <div class="card-border-gold text-center py-8">
+          <p class="text-5xl mb-4">🏆</p>
+          <p class="text-xl font-black text-[#292524] mb-3">品牌壓力</p>
+          <p class="text-sm text-[#78716c]">員工和客戶越來越在乎：<br>「你這家公司有良心嗎？」</p>
+        </div>
+      </div>
+      <div class="card-gold-quote text-center">
+        <p class="text-xl font-black text-[#faf8f5]">「不做 ESG，以前是加分，現在是<span class="text-[#ca8a04]">基本門票</span>。」</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 第 8 頁｜ESG 能幫公司做什麼 -->
+  <section class="slide" :class="{ 'active': current === 7 }">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">ESG 能幫公司做什麼？</h2>
+      <div class="gold-line"></div>
+      <div class="grid grid-cols-2 gap-8 mb-8">
+        <div>
+          <p class="text-xl font-black text-[#292524] mb-4">🔵 對外</p>
+          <div class="card-border-gold mb-4 py-4 px-5">
+            <p class="font-bold text-[#292524] mb-1">更容易取得資金</p>
+            <p class="text-sm text-[#78716c]">ESG 績效好的公司，銀行願意給更低的借貸利率</p>
+          </div>
+          <div class="card-border-gold py-4 px-5">
+            <p class="font-bold text-[#292524] mb-1">品牌信任度提升</p>
+            <p class="text-sm text-[#78716c]">吸引 ESG 意識高的客戶和投資人</p>
+          </div>
+        </div>
+        <div>
+          <p class="text-xl font-black text-[#292524] mb-4">🟡 對內</p>
+          <div class="card-border-gold mb-4 py-4 px-5">
+            <p class="font-bold text-[#292524] mb-1">風險管理</p>
+            <p class="text-sm text-[#78716c]">法規遵循、供應鏈韌性、氣候風險</p>
+          </div>
+          <div class="card-border-gold py-4 px-5">
+            <p class="font-bold text-[#292524] mb-1">營運效率提升</p>
+            <p class="text-sm text-[#78716c]">節能、減廢 = 省成本 = 更高利潤</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-gold-quote text-center">
+        <p class="text-xl font-black text-[#faf8f5]">「ESG 不是成本，是<span class="text-[#ca8a04]">投資</span>。」</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 第 9 頁｜Delta 能幫你做什麼 -->
+  <section class="slide" :class="{ 'active': current === 8 }">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">Delta ESG Consulting Tech 能幫你做什麼？</h2>
+      <div class="gold-line"></div>
+      <div class="grid grid-cols-2 gap-5 mb-8">
+        <div class="card-border-gold py-6 px-6">
+          <p class="text-2xl mb-2">📝</p>
+          <p class="text-lg font-black text-[#292524] mb-2">ESG 策略藍圖</p>
+          <p class="text-sm text-[#78716c]">評估現況、訂目標、找優先順序，從零到上路</p>
+        </div>
+        <div class="card-border-gold py-6 px-6">
+          <p class="text-2xl mb-2">📊</p>
+          <p class="text-lg font-black text-[#292524] mb-2">碳盤查與揭露</p>
+          <p class="text-sm text-[#78716c]">範疇 1/2/3 碳排放計算、碳中和路徑、永續報告書撰寫</p>
+        </div>
+        <div class="card-border-gold py-6 px-6">
+          <p class="text-2xl mb-2">🔍</p>
+          <p class="text-lg font-black text-[#292524] mb-2">供應鏈健檢</p>
+          <p class="text-sm text-[#78716c]">S 指標稽核、供應商評級與輔導、RBA 驗廠準備</p>
+        </div>
+        <div class="card-border-gold py-6 px-6">
+          <p class="text-2xl mb-2">📚</p>
+          <p class="text-lg font-black text-[#292524] mb-2">教育訓練</p>
+          <p class="text-sm text-[#78716c]">內部 ESG 意識工作坊，從工程師到高階主管都听得懂</p>
+        </div>
+      </div>
+      <div class="card-gold-quote text-center">
+        <p class="text-xl font-black text-[#faf8f5]">「我們幫你從零到上路，不用從頭學。」</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 第 10 頁｜下一步 -->
+  <section class="slide" :class="{ 'active': current === 9 }">
+    <div class="max-w-6xl mx-auto text-center">
+      <h2 class="text-3xl font-black text-[#ca8a04] mb-1">下一步</h2>
+      <div class="gold-line mx-auto" style="max-width: 200px;"></div>
+      <div class="space-y-6 mb-10" style="max-width: 600px; margin: 0 auto;">
+        <div class="card-border-gold flex items-center gap-5 py-5 px-6 text-left">
+          <span class="font-mono font-black text-[#ca8a04] flex-shrink-0" style="font-size: 3rem; line-height: 1;">1</span>
+          <div>
+            <p class="font-bold text-[#292524] text-lg">了解</p>
+            <p class="text-sm text-[#78716c]">你的公司現在 ESG 分數在哪裡？</p>
+          </div>
+        </div>
+        <div class="card-border-gold flex items-center gap-5 py-5 px-6 text-left">
+          <span class="font-mono font-black text-[#ca8a04] flex-shrink-0" style="font-size: 3rem; line-height: 1;">2</span>
+          <div>
+            <p class="font-bold text-[#292524] text-lg">診斷</p>
+            <p class="text-sm text-[#78716c]">我們幫你做一個 2 小時的快速健檢</p>
+          </div>
+        </div>
+        <div class="card-border-gold flex items-center gap-5 py-5 px-6 text-left">
+          <span class="font-mono font-black text-[#ca8a04] flex-shrink-0" style="font-size: 3rem; line-height: 1;">3</span>
+          <div>
+            <p class="font-bold text-[#292524] text-lg">行動</p>
+            <p class="text-sm text-[#78716c]">訂出第一步的優先順序和時程</p>
+          </div>
+        </div>
+      </div>
+      <p class="text-xl font-black text-[#292524] mb-2">Delta ESG Consulting Tech</p>
+      <p class="text-sm text-[#78716c]">一起把 ESG 變成你的競爭力</p>
+    </div>
+  </section>
+
+  <script>
+    // Progress bar already handled by Alpine
+  </script>
+</body>
+</html>

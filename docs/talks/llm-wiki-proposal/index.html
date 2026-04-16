@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM Wiki — AI 知識編譯系統</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <style>
+    @import url("https://font.emtech.cc/css/GenSenRoundedTW");
+    @import url("https://font.emtech.cc/css/GenJyuuGothicP");
+    @import url("https://font.emtech.cc/css/MaokenAssortedSansTC");
+    @import url("https://font.emtech.cc/css/ChenYuLuoYan");
+    @import url("https://font.emtech.cc/css/UnboundedSans");
+    :root {
+      --cream: #faf8f5;
+      --gold: #ca8a04;
+      --gold-light: #d4a853;
+      --coffee: #292524;
+    }
+    body { font-family: 'GenJyuuGothicP', sans-serif; background: var(--cream); }
+    .font-title { font-family: 'GenSenRoundedTW', sans-serif; }
+    .font-deco { font-family: 'MaokenAssortedSansTC', sans-serif; }
+    .font-quote { font-family: 'ChenYuLuoYan', cursive; }
+    .font-bold-impact { font-family: 'UnboundedSans', sans-serif; }
+    .slide { display: none; }
+    .slide.active { display: flex; }
+    .card-shadow { box-shadow: 4px 4px 0px var(--coffee); }
+    .card-hover:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0px var(--coffee); }
+  </style>
+</head>
+<body class="min-h-screen" x-data="{ slide: 0 }">
+
+  <!-- Slide 0: Cover -->
+  <div class="slide active flex-col justify-center items-center min-h-screen bg-[#faf8f5] p-12" x-show="slide===0">
+    <div class="text-center">
+      <div class="font-deco text-xs tracking-widest text-[#ca8a04] uppercase mb-4">AI Product Proposal</div>
+      <h1 class="font-title text-5xl md:text-7xl font-black text-[#292524] leading-tight mb-6">LLM Wiki</h1>
+      <p class="font-quote text-2xl text-[#ca8a04] mb-8">知識自己會生長</p>
+      <div class="text-sm text-gray-400">建構會累積的 AI 知識系統</div>
+    </div>
+  </div>
+
+  <!-- Slide 1: Pain -->
+  <div class="slide flex-col justify-center items-center min-h-screen bg-[#faf8f5] p-12" x-show="slide===1">
+    <div class="max-w-2xl w-full">
+      <div class="font-deco text-xs tracking-widest text-[#ca8a04] uppercase mb-6">你的現況</div>
+      <div class="bg-white rounded-2xl p-8 border-2 border-[#292524] card-shadow mb-8">
+        <p class="font-quote text-xl text-[#292524] leading-relaxed italic">
+          「試過各種 AI 工具，問問題還是要從頭描述一遍」<br><br>
+          「公司文件散落在各處，找資料比做事情還久」<br><br>
+          「知識庫建了沒人用，最後還是靠 LINE 問人」
+        </p>
+      </div>
+      <h2 class="font-title text-3xl font-black text-[#292524]">
+        你不需要更多工具。<br>
+        <span class="text-[#ca8a04]">你需要知識自己會生長。</span>
+      </h2>
+    </div>
+  </div>
+
+  <!-- Slide 2: Core Insight -->
+  <div class="slide flex-col justify-center items-center min-h-screen bg-[#faf8f5] p-12" x-show="slide===2">
+    <div class="max-w-2xl w-full">
+      <div class="font-deco text-xs tracking-widest text-[#ca8a04] uppercase mb-6">核心差異</div>
+      <div class="bg-[#292524] rounded-2xl p-10 mb-8">
+        <h2 class="font-title text-3xl font-black text-white mb-4">不是搜尋。是編譯。</h2>
+        <div class="space-y-4 text-gray-300 text-sm">
+          <div class="flex items-start gap-3">
+            <div class="w-2 h-2 rounded-full bg-gray-500 mt-2 flex-shrink-0"></div>
+            <p><strong class="text-white">傳統 RAG：</strong>每次發問，AI 從零拼湊資料</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-2 h-2 rounded-full bg-[#ca8a04] mt-2 flex-shrink-0"></div>
+            <p><strong class="text-[#ca8a04]">LLM Wiki：</strong>資料丟進去，AI 主動整理成結構化頁面</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-2 h-2 rounded-full bg-[#ca8a04] mt-2 flex-shrink-0"></div>
+            <p><strong class="text-white">知識累積：</strong>問問題時，答案早就存在那裡了</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 3: How It Works -->
+  <div class="slide flex-col justify-center items-center min-h-screen bg-[#faf8f5] p-12" x-show="slide===3">
+    <div class="max-w-3xl w-full">
+      <div class="font-deco text-xs tracking-widest text-[#ca8a04] uppercase mb-6">運作方式</div>
+      <div class="grid grid-cols-3 gap-6">
+        <div class="bg-white rounded-2xl p-6 border-2 border-[#292524] card-shadow card-hover transition-all duration-200">
+          <div class="w-10 h-10 bg-[#ca8a04] text-white rounded-full flex items-center justify-center font-bold text-lg mb-4">1</div>
+          <h3 class="font-title font-bold text-lg text-[#292524] mb-2">丟進來源</h3>
+          <p class="text-sm text-gray-500">文件、論文、筆記、聊天紀錄——任何東西</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 border-2 border-[#292524] card-shadow card-hover transition-all duration-200">
+          <div class="w-10 h-10 bg-[#ca8a04] text-white rounded-full flex items-center justify-center font-bold text-lg mb-4">2</div>
+          <h3 class="font-title font-bold text-lg text-[#292524] mb-2">AI 編譯</h3>
+          <p class="text-sm text-gray-500">自動生成結構頁面、跨頁連結、矛盾檢測</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 border-2 border-[#292524] card-shadow card-hover transition-all duration-200">
+          <div class="w-10 h-10 bg-[#ca8a04] text-white rounded-full flex items-center justify-center font-bold text-lg mb-4">3</div>
+          <h3 class="font-title font-bold text-lg text-[#292524] mb-2">知識累積</h3>
+          <p class="text-sm text-gray-500">每次新增都讓整個 wiki 變強，不會遺忘</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 4: Plan A -->
+  <div class="slide flex-col justify-center items-center min-h-screen bg-[#faf8f5] p-12" x-show="slide===4">
+    <div class="max-w-2xl w-full">
+      <div class="flex items-center gap-2 mb-6">
+        <span class="bg-[#ca8a04] text-white text-xs font-bold px-3 py-1 rounded-full">推薦</span>
+        <span class="font-deco text-xs tracking-widest text-gray-400 uppercase">Plan A</span>
+      </div>
+      <div class="bg-white rounded-2xl p-8 border-2 border-[#292524] card-shadow mb-6">
+        <h2 class="font-title text-3xl font-black text-[#292524] mb-2">4 週系統建構</h2>
+        <p class="text-sm text-gray-500 mb-6">從無到有建立一套 LLM Wiki，讓你公司或團隊的知識開始自己生長。</p>
+        <div class="space-y-4 mb-6">
+          <div class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-[#ca8a04] text-white flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">1</div>
+            <p class="text-sm text-[#292524]"><span class="font-bold">第 1 週</span> — 現有知識盤點，設計知識架構</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-[#ca8a04] text-white flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">2</div>
+            <p class="text-sm text-[#292524]"><span class="font-bold">第 2–3 週</span> — 建置流程、培訓團隊、攝入第一批資料</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-[#ca8a04] text-white flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">3</div>
+            <p class="text-sm text-[#292524]"><span class="font-bold">第 4 週</span> — 驗收、交付 SOP、確保自己能延續</p>
+          </div>
+        </div>
+        <div class="bg-[#f5f0e8] rounded-xl p-4 border-l-4 border-[#ca8a04]">
+          <p class="font-bold text-[#292524] text-sm">4 週後，團隊知識自己會生長</p>
+          <p class="text-xs text-gray-500 mt-0.5">不需要再依賴建置的人，團隊自己能延續</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 5: Plan B -->
+  <div class="slide flex-col justify-center items-center min-h-screen bg-[#faf8f5] p-12" x-show="slide===5">
+    <div class="max-w-2xl w-full">
+      <div class="flex items-center gap-2 mb-6">
+        <span class="bg-gray-400 text-white text-xs font-bold px-3 py-1 rounded-full">另一個選擇</span>
+        <span class="font-deco text-xs tracking-widest text-gray-400 uppercase">Plan B</span>
+      </div>
+      <div class="bg-white rounded-2xl p-8 border-2 border-[#292524] card-shadow mb-6">
+        <h2 class="font-title text-3xl font-black text-[#292524] mb-2">單次深度診斷</h2>
+        <p class="text-sm text-gray-500 mb-6">用 90 分鐘拆解你的知識斷點，給你一個可以立刻開始的行動規劃。</p>
+        <div class="space-y-4 mb-6">
+          <div class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-[#292524] text-white flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">1</div>
+            <p class="text-sm text-[#292524]"><span class="font-bold">90 分鐘</span> — 知識現況診斷 + Gap 分析</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-[#292524] text-white flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">2</div>
+            <p class="text-sm text-[#292524]"><span class="font-bold">行動規劃 PDF</span> — 整理成文件，可以帶走</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-3 mb-6">
+          <div class="bg-[#f5f0e8] rounded-xl p-3 text-center">
+            <p class="font-bold text-[#292524] text-sm">🔍 斷點分析</p>
+          </div>
+          <div class="bg-[#f5f0e8] rounded-xl p-3 text-center">
+            <p class="font-bold text-[#292524] text-sm">🏗️ 架構建議</p>
+          </div>
+          <div class="bg-[#f5f0e8] rounded-xl p-3 text-center">
+            <p class="font-bold text-[#292524] text-sm">📋 第一步清單</p>
+          </div>
+        </div>
+        <div class="bg-[#f5f0e8] rounded-xl p-4 border-l-4 border-gray-400">
+          <p class="font-bold text-[#292524] text-sm">沒有壓力</p>
+          <p class="text-xs text-gray-500 mt-0.5">之後要繼續建、或自己來都可以，不需要綁套餐</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 6: CTA -->
+  <div class="slide flex-col justify-center items-center min-h-screen bg-[#292524] p-12" x-show="slide===6">
+    <div class="text-center">
+      <h2 class="font-title text-4xl font-black text-white mb-4">下一步很簡單</h2>
+      <p class="text-gray-400 mb-8">告訴我你的現況，我幫你選適合的方案</p>
+      <div class="inline-flex items-center gap-3 bg-[#ca8a04] text-white font-bold px-8 py-4 rounded-full text-lg">
+        約一次 30 分鐘的談話
+      </div>
+      <p class="text-gray-500 text-sm mt-4">不需要現在決定，先聊聊看</p>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-white rounded-full px-6 py-3 border-2 border-[#292524] card-shadow">
+    <button @click="slide = Math.max(0, slide-1)" class="w-8 h-8 flex items-center justify-center text-[#292524] hover:text-[#ca8a04] transition-colors">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="flex items-center gap-1.5">
+      <template x-for="i in 7" :key="i">
+        <div class="w-2 h-2 rounded-full transition-colors" :class="slide === i-1 ? 'bg-[#ca8a04]' : 'bg-gray-300'"></div>
+      </template>
+    </div>
+    <button @click="slide = Math.min(6, slide+1)" class="w-8 h-8 flex items-center justify-center text-[#292524] hover:text-[#ca8a04] transition-colors">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+
+  <div class="fixed bottom-2 right-4 text-xs text-gray-400">← → 鍵切換</div>
+
+</body>
+</html>

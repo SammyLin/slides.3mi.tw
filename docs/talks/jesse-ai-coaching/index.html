@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 生活陪跑教練 — 給傑西的提案</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <style>
+    @import url("https://font.emtech.cc/css/GenSenRoundedTW");
+    @import url("https://font.emtech.cc/css/GenJyuuGothicP");
+    @import url("https://font.emtech.cc/css/MaokenAssortedSansTC");
+    @import url("https://font.emtech.cc/css/ChenYuLuoYan");
+    :root { --cream: #faf8f5; --gold: #ca8a04; --coffee: #292524; }
+    body { font-family: 'GenJyuuGothicP', sans-serif; background: var(--cream); }
+    .font-title { font-family: 'GenSenRoundedTW', sans-serif; }
+    .font-deco { font-family: 'MaokenAssortedSansTC', sans-serif; }
+    .font-quote { font-family: 'ChenYuLuoYan', cursive; }
+    .slide { display: none; }
+    .slide.active { display: flex; }
+    .card-shadow { box-shadow: 4px 4px 0px var(--coffee); }
+    .sketch-border { border: 3px solid var(--coffee); border-radius: 12px; box-shadow: 4px 4px 0px var(--coffee); }
+  </style>
+</head>
+<body class="min-h-screen" x-data="{ slide: 0 }">
+
+  <!-- ═══ SLIDE 0: Cover ═══ -->
+  <div class="slide active flex-col justify-center items-center min-h-screen bg-[#faf8f5] p-12" x-show="slide===0">
+    <div class="text-center max-w-2xl">
+      <div class="font-deco text-xs tracking-widest text-[#ca8a04] uppercase mb-6">For Jesse</div>
+      <h1 class="font-title text-4xl md:text-6xl font-black text-[#292524] leading-tight mb-4">AI 生活陪跑</h1>
+      <p class="font-quote text-xl text-[#ca8a04] mb-6">你的時間，教會你怎麼用</p>
+      <p class="text-gray-500 text-base">讓 AI 成為你的延伸，不再只是完成任務的工具</p>
+    </div>
+  </div>
+
+  <!-- ═══ SLIDE 1: Jesse's Context ═══ -->
+  <div class="slide flex-col justify-center items-center min-h-screen bg-[#faf8f5] p-12" x-show="slide===1">
+    <div class="max-w-2xl w-full">
+      <div class="font-deco text-xs tracking-widest text-[#ca8a04] uppercase mb-4">傑西的情境</div>
+      
+      <div class="bg-white rounded-2xl p-6 sketch-border mb-6">
+        <p class="font-quote text-lg text-[#292524] leading-relaxed">
+          「一天結束，發現最重要的事沒做」<br><br>
+          「想要 AI 幫我管理時間和生活，但不知道從何下手」
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-[#f5f0e8] rounded-xl p-4">
+          <p class="text-xs text-[#ca8a04] font-bold uppercase mb-2">消耗時間的事</p>
+          <p class="text-sm text-[#292524]">寫東西、做決定、資訊過載、家庭後勤</p>
+        </div>
+        <div class="bg-[#f5f0e8] rounded-xl p-4">
+          <p class="text-xs text-[#ca8a04] font-bold uppercase mb-2">深度工作</p>
+          <p class="text-sm text-[#292524]">只有 1-2 小時/天</p>
+        </div>
+        <div class="bg-[#f5f0e8] rounded-xl p-4">
+          <p class="text-xs text-[#ca8a04] font-bold uppercase mb-2">逃避的事</p>
+          <p class="text-sm text-[#292524]">陪伴孩子學習，但不知道方向對不對</p>
+        </div>
+        <div class="bg-[#f5f0e8] rounded-xl p-4">
+          <p class="text-xs text-[#ca8a04] font-bold uppercase mb-2">AI 現況</p>
+          <p class="text-sm text-[#292524]">用 ChatGPT + Gemini，用完就結束</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SLIDE 2: Jesse's 6 Month Vision ═══ -->
+  <div class="slide flex-col justify-center items-center min-h-screen bg-[#faf8f5] p-12" x-show="slide===2">
+    <div class="max-w-2xl w-full">
+      <div class="font-deco text-xs tracking-widest text-[#ca8a04] uppercase mb-4">6 個月後的畫面</div>
+      
+      <div class="bg-[#292524] rounded-2xl p-8 mb-6">
+        <p class="font-quote text-lg text-white leading-relaxed mb-4">
+          「我希望我可以花半天的時間把正職工作完成」
+        </p>
+        <p class="font-quote text-lg text-[#ca8a04] leading-relaxed mb-4">
+          「運用 AI 工具幫我做投資決策，創造被動收入」
+        </p>
+        <p class="font-quote text-lg text-white leading-relaxed">
+          「在孩子課後時間進行高品質的陪伴與學習引導」
+        </p>
+      </div>
+
+      <div class="text-center">
+        <p class="text-gray-500 text-sm">他想要的「優雅」：</p>
+        <p class="font-title text-xl font-bold text-[#292524]">認知輕鬆 — 大腦不再被瑣事佔滿，有空間想重要的事</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SLIDE 3: How I Help - Jesse's Learning Style ═══ -->
+  <div class="slide flex-col justify-center items-center min-h-screen bg-[#faf8f5] p-12" x-show="slide===3">
+    <div class="max-w-2xl w-full">
+      <div class="font-deco text-xs tracking-widest text-[#ca8a04] uppercase mb-4">學習方式</div>
+      
+      <div class="bg-white rounded-2xl p-6 sketch-border mb-6">
+        <p class="font-title text-2xl font-black text-[#292524] mb-2">討論式學習</p>
+        <p class="text-gray-500">聊著聊著就想通了 — 不喜歡自己啃文件</p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 sketch-border">
+        <p class="font-title text-2xl font-black text-[#292524] mb-2">理想教練關係</p>
+        <p class="text-gray-500">紀律夥伴 — 需要有人盯著才會執行</p>
+      </div>
+
+      <div class="mt-6 text-center">
+        <p class="text-sm text-gray-400">每週可投入 <span class="text-[#ca8a04] font-bold">3-5 小時</span> 在建立新系統上</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SLIDE 4: System Components ═══ -->
+  <div class="slide flex-col justify-center items-center min-h-screen bg-[#faf8f5] p-12" x-show="slide===4">
+    <div class="max-w-3xl w-full">
+      <div class="font-deco text-xs tracking-widest text-[#ca8a04] uppercase mb-4">傑西需要的系統</div>
+      
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="bg-white rounded-2xl p-5 sketch-border text-center">
+          <p class="text-3xl mb-2">✍️</p>
+          <p class="font-bold text-[#292524] text-sm">寫作自動化</p>
+          <p class="text-xs text-gray-500 mt-1">Email、報告、文案、提案</p>
+        </div>
+        <div class="bg-white rounded-2xl p-5 sketch-border text-center">
+          <p class="text-3xl mb-2">🧠</p>
+          <p class="font-bold text-[#292524] text-sm">決策系統</p>
+          <p class="text-xs text-gray-500 mt-1">從午餐到策略方向</p>
+        </div>
+        <div class="bg-white rounded-2xl p-5 sketch-border text-center">
+          <p class="text-3xl mb-2">📬</p>
+          <p class="font-bold text-[#292524] text-sm">資訊濃縮</p>
+          <p class="text-xs text-gray-500 mt-1">找資料、摘要、翻譯</p>
+        </div>
+        <div class="bg-white rounded-2xl p-5 sketch-border text-center">
+          <p class="text-3xl mb-2">👨‍👧‍👦</p>
+          <p class="font-bold text-[#292524] text-sm">家庭行程</p>
+          <p class="text-xs text-gray-500 mt-1">小孩行程、功課安排</p>
+        </div>
+        <div class="bg-white rounded-2xl p-5 sketch-border text-center">
+          <p class="text-3xl mb-2">📊</p>
+          <p class="font-bold text-[#292524] text-sm">AI 投資助理</p>
+          <p class="text-xs text-gray-500 mt-1">協助被動收入決策</p>
+        </div>
+        <div class="bg-white rounded-2xl p-5 sketch-border text-center">
+          <p class="text-3xl mb-2">🎯</p>
+          <p class="font-bold text-[#292524] text-sm">每日定位</p>
+          <p class="text-xs text-gray-500 mt-1">清楚知道每天該做什麼</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SLIDE 5: Timeline - 4 Weeks ═══ -->
+  <div class="slide flex-col justify-center items-center min-h-screen bg-[#faf8f5] p-12" x-show="slide===5">
+    <div class="max-w-3xl w-full">
+      <div class="font-deco text-xs tracking-widest text-[#ca8a04] uppercase mb-4">4 週系統建構</div>
+      
+      <!-- Timeline -->
+      <div class="w-full h-40 flex items-center justify-center mb-6">
+        <svg viewBox="0 0 400 100" class="w-full max-w-lg">
+          <line x1="40" y1="50" x2="360" y2="50" stroke="#292524" stroke-width="4" stroke-linecap="round"/>
+          <polygon points="360,50 340,45 340,55" fill="#292524"/>
+          
+          <circle cx="80" cy="50" r="14" fill="#ca8a04" stroke="#292524" stroke-width="3"/>
+          <text x="80" y="55" text-anchor="middle" class="text-xs font-bold fill-white" font-family="GenJyuuGothicP">W1</text>
+          
+          <circle cx="200" cy="50" r="14" fill="#ca8a04" stroke="#292524" stroke-width="3"/>
+          <text x="200" y="55" text-anchor="middle" class="text-xs font-bold fill-white" font-family="GenJyuuGothicP">W2</text>
+          
+          <circle cx="320" cy="50" r="14" fill="#ca8a04" stroke="#292524" stroke-width="3"/>
+          <text x="320" y="55" text-anchor="middle" class="text-xs font-bold fill-white" font-family="GenJyuuGothicP">W3-4</text>
+        </svg>
+      </div>
+
+      <div class="grid grid-cols-3 gap-4">
+        <div class="bg-white rounded-xl p-4 sketch-border">
+          <p class="font-bold text-[#ca8a04] text-sm mb-2">第 1 週</p>
+          <p class="text-xs text-gray-500">深度診斷 + 設計適合傑西的系統架構</p>
+        </div>
+        <div class="bg-white rounded-xl p-4 sketch-border">
+          <p class="font-bold text-[#ca8a04] text-sm mb-2">第 2-3 週</p>
+          <p class="text-xs text-gray-500">討論式學習 + 實作 + 有人盯著執行</p>
+        </div>
+        <div class="bg-white rounded-xl p-4 sketch-border">
+          <p class="font-bold text-[#ca8a04] text-sm mb-2">第 4 週</p>
+          <p class="text-xs text-gray-500">驗收 + 交付 SOP + 之後自己也能延續</p>
+        </div>
+      </div>
+
+      <div class="mt-6 bg-[#f5f0e8] rounded-xl p-4 border-l-4 border-[#ca8a04] text-center">
+        <p class="font-bold text-[#292524]">4 週後，你會有一套自己運作的系統</p>
+        <p class="text-xs text-gray-500 mt-1">不再需要教練盯著，也能繼續優化</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SLIDE 6: Plan A vs Plan B ═══ -->
+  <div class="slide flex-col justify-center items-center min-h-screen bg-[#faf8f5] p-12" x-show="slide===6">
+    <div class="max-w-3xl w-full">
+      <div class="font-deco text-xs tracking-widest text-[#ca8a04] uppercase mb-4">方案選擇</div>
+      
+      <div class="grid grid-cols-2 gap-6">
+        <!-- Plan A -->
+        <div class="bg-white rounded-2xl p-6 sketch-border">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="bg-[#ca8a04] text-white text-xs font-bold px-3 py-1 rounded-full">推薦</span>
+          </div>
+          <h3 class="font-title text-xl font-black text-[#292524] mb-2">4 週陪跑</h3>
+          <p class="text-xs text-gray-500 mb-4">討論式學習，有人盯著才會執行</p>
+          
+          <div class="space-y-2 mb-4">
+            <div class="flex items-center gap-2">
+              <div class="w-5 h-5 rounded-full bg-[#ca8a04] text-white flex items-center justify-center text-xs font-bold">1</div>
+              <span class="text-xs text-[#292524]">深度診斷個人需求</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="w-5 h-5 rounded-full bg-[#ca8a04] text-white flex items-center justify-center text-xs font-bold">2</div>
+              <span class="text-xs text-[#292524]">設計系統 + 討論式學習</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="w-5 h-5 rounded-full bg-[#ca8a04] text-white flex items-center justify-center text-xs font-bold">3</div>
+              <span class="text-xs text-[#292524]">陪跑 4 週 + 交付 SOP</span>
+            </div>
+          </div>
+          
+          <div class="bg-[#f5f0e8] rounded-xl p-3 border-l-4 border-[#ca8a04]">
+            <p class="font-bold text-[#292524] text-xs">你會得到：</p>
+            <p class="text-xs text-gray-500">一套可自行運作的系統 + 受用一輩子的方法</p>
+          </div>
+        </div>
+        
+        <!-- Plan B -->
+        <div class="bg-white rounded-2xl p-6 sketch-border">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="bg-gray-400 text-white text-xs font-bold px-3 py-1 rounded-full">另一個選擇</span>
+          </div>
+          <h3 class="font-title text-xl font-black text-[#292524] mb-2">單次深度諮詢</h3>
+          <p class="text-xs text-gray-500 mb-4">90 分鐘，給方向，不盯執行</p>
+          
+          <div class="space-y-2 mb-4">
+            <div class="flex items-center gap-2">
+              <div class="w-5 h-5 rounded-full bg-[#292524] text-white flex items-center justify-center text-xs font-bold">1</div>
+              <span class="text-xs text-[#292524]">診斷現況 + 找出最高槓桿點</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="w-5 h-5 rounded-full bg-[#292524] text-white flex items-center justify-center text-xs font-bold">2</div>
+              <span class="text-xs text-[#292524]">討論式釐清方向</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="w-5 h-5 rounded-full bg-[#292524] text-white flex items-center justify-center text-xs font-bold">3</div>
+              <span class="text-xs text-[#292524]">交付行動計劃 PDF</span>
+            </div>
+          </div>
+          
+          <div class="bg-[#f5f0e8] rounded-xl p-3 border-l-4 border-gray-400">
+            <p class="font-bold text-[#292524] text-xs">你會得到：</p>
+            <p class="text-xs text-gray-500">清晰方向 + 第一步清單</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SLIDE 7: CTA ═══ -->
+  <div class="slide flex-col justify-center items-center min-h-screen bg-[#292524] p-12" x-show="slide===7">
+    <div class="text-center max-w-xl">
+      <h2 class="font-title text-4xl font-black text-white mb-4">下一步很簡單</h2>
+      <p class="text-gray-400 mb-8">我們聊一次 30 分鐘，<br>確認哪個方案適合你</p>
+      <div class="inline-flex items-center gap-3 bg-[#ca8a04] text-white font-bold px-8 py-4 rounded-full text-lg">
+        約一次談話
+      </div>
+      <p class="text-gray-500 text-sm mt-4">不需要現在決定，先聊聊看</p>
+    </div>
+  </div>
+
+  <!-- ═══ Navigation ═══ -->
+  <div class="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-white rounded-full px-6 py-3 sketch-border">
+    <button @click="slide = Math.max(0, slide-1)" class="w-8 h-8 flex items-center justify-center text-[#292524] hover:text-[#ca8a04]">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="flex items-center gap-1.5">
+      <template x-for="i in 8" :key="i">
+        <div class="w-2 h-2 rounded-full transition-colors cursor-pointer" :class="slide === i-1 ? 'bg-[#ca8a04]' : 'bg-gray-300'" @click="slide = i-1"></div>
+      </template>
+    </div>
+    <button @click="slide = Math.min(7, slide+1)" class="w-8 h-8 flex items-center justify-center text-[#292524] hover:text-[#ca8a04]">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+
+  <div class="fixed bottom-2 right-4 text-xs text-gray-400">← → 鍵 / 點擊切換 | F 全螢幕</div>
+
+  <script>
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        const app = document.querySelector('[x-data]').__x.$data;
+        app.slide = Math.min(7, app.slide + 1);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const app = document.querySelector('[x-data]').__x.$data;
+        app.slide = Math.max(0, app.slide - 1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        document.documentElement.requestFullscreen();
+      }
+    });
+  </script>
+
+</body>
+</html>

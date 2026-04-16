@@ -104,40 +104,37 @@
       <h2 class="font-title text-2xl font-black text-[#292524] mb-2">4 週時間，你最想先解決哪一個？</h2>
       <p class="text-gray-500 text-sm mb-6">選 1-2 個，我們專心做</p>
       
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="module-card bg-white rounded-2xl p-5 sketch-border" onclick="this.classList.toggle('selected')">
-          <div class="mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
-          <h3 class="font-bold text-[#292524] text-lg mb-2">每日定位系統</h3>
-          <p class="text-sm text-gray-500 mb-3">每天早上 5 分鐘，讓 AI 幫你排出優先順序</p>
+          <div class="mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+          </div>
+          <h3 class="font-bold text-[#292524] text-lg mb-2">第二顆大腦</h3>
+          <p class="text-sm text-gray-500 mb-3">丟資料進去，它幫你連結、記得、找出來</p>
           <div class="bg-[#f5f0e8] rounded-lg p-3">
-            <p class="text-xs text-[#292524]">解決：一天結束發現最重要的事沒做</p>
+            <p class="text-xs text-[#292524]">解決：AI 用完就結束，沒有累積</p>
           </div>
         </div>
         
         <div class="module-card bg-white rounded-2xl p-5 sketch-border" onclick="this.classList.toggle('selected')">
-          <div class="mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></div>
-          <h3 class="font-bold text-[#292524] text-lg mb-2">寫作自動化系統</h3>
-          <p class="text-sm text-gray-500 mb-3">email、報告、文案、提案的 framework</p>
+          <div class="mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+          </div>
+          <h3 class="font-bold text-[#292524] text-lg mb-2">文案加速器</h3>
+          <p class="text-sm text-gray-500 mb-3">你有方向，AI 幫你想框架、突破第一句卡住</p>
           <div class="bg-[#f5f0e8] rounded-lg p-3">
             <p class="text-xs text-[#292524]">解決：寫東西消耗大量時間</p>
           </div>
         </div>
         
         <div class="module-card bg-white rounded-2xl p-5 sketch-border" onclick="this.classList.toggle('selected')">
-          <div class="mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-          <h3 class="font-bold text-[#292524] text-lg mb-2">孩子學習引導系統</h3>
-          <p class="text-sm text-gray-500 mb-3">陪功課時知道該做什麼，不會卡住</p>
-          <div class="bg-[#f5f0e8] rounded-lg p-3">
-            <p class="text-xs text-[#292524]">解決：陪伴孩子時不知道方向對不對</p>
+          <div class="mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           </div>
-        </div>
-        
-        <div class="module-card bg-white rounded-2xl p-5 sketch-border" onclick="this.classList.toggle('selected')">
-          <div class="mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-          <h3 class="font-bold text-[#292524] text-lg mb-2">投資決策系統</h3>
-          <p class="text-sm text-gray-500 mb-3">rule-based 系統，AI 幫你監控 + 提醒</p>
+          <h3 class="font-bold text-[#292524] text-lg mb-2">AI 紀律夥伴</h3>
+          <p class="text-sm text-gray-500 mb-3">記錄你的進度、提醒你當下該做什麼，盯著你執行</p>
           <div class="bg-[#f5f0e8] rounded-lg p-3">
-            <p class="text-xs text-[#292524]">解決：不確定如何開始、被動收入</p>
+            <p class="text-xs text-[#292524]">解決：需要有人盯著才會執行</p>
           </div>
         </div>
       </div>
@@ -241,16 +238,16 @@
           
           <div class="space-y-2 mb-4">
             <div class="flex items-center gap-2 text-xs text-[#292524]">
-              <span class="text-[#ca8a04]">✓</span> 每週 60 分鐘視訊
+              <span class="text-[#ca8a04]">-</span> 每週 60 分鐘視訊
             </div>
             <div class="flex items-center gap-2 text-xs text-[#292524]">
-              <span class="text-[#ca8a04]">✓</span> 討論式學習
+              <span class="text-[#ca8a04]">-</span> 討論式學習
             </div>
             <div class="flex items-center gap-2 text-xs text-[#292524]">
-              <span class="text-[#ca8a04]">✓</span> 有人盯著執行
+              <span class="text-[#ca8a04]">-</span> 有人盯著執行
             </div>
             <div class="flex items-center gap-2 text-xs text-[#292524]">
-              <span class="text-[#ca8a04]">✓</span> 交付 SOP 文件
+              <span class="text-[#ca8a04]">-</span> 交付 SOP 文件
             </div>
           </div>
           
@@ -269,13 +266,13 @@
           
           <div class="space-y-2 mb-4">
             <div class="flex items-center gap-2 text-xs text-[#292524]">
-              <span class="text-[#292524]">✓</span> 現況診斷
+              <span class="text-[#292524]">-</span> 現況診斷
             </div>
             <div class="flex items-center gap-2 text-xs text-[#292524]">
-              <span class="text-[#292524]">✓</span> 討論式釐清
+              <span class="text-[#292524]">-</span> 討論式釐清
             </div>
             <div class="flex items-center gap-2 text-xs text-[#292524]">
-              <span class="text-[#292524]">✓</span> 行動計劃 PDF
+              <span class="text-[#292524]">-</span> 行動計劃 PDF
             </div>
           </div>
           
